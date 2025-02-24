@@ -2,6 +2,8 @@ package com.miniprojetspring.payload;
 
 import com.miniprojetspring.Model.Epic;
 import com.miniprojetspring.Model.ProductBacklog;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,12 +12,12 @@ import java.util.List;
 @Getter
 @Setter
 public class UpdateProductBacklogPayload {
+    @NotBlank(message = "name is required (Cannot be blank)")
+    @NotNull(message = "name is required (Cannot be null)")
     private String name;
-    private List<Epic> epics;
 
     public ProductBacklog ToEntity(ProductBacklog productBacklog) {
         productBacklog.setName(this.getName());
-        productBacklog.setEpics(this.getEpics());
         return productBacklog;
     }
 }

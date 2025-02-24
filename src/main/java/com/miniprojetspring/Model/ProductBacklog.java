@@ -15,7 +15,6 @@ import java.util.UUID;
 @Builder
 public class ProductBacklog {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Builder.Default
     private UUID id = UUID.randomUUID();
     private String name;
