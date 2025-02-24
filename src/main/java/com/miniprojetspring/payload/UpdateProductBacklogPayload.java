@@ -1,13 +1,10 @@
 package com.miniprojetspring.payload;
 
-import com.miniprojetspring.Model.Epic;
 import com.miniprojetspring.Model.ProductBacklog;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter
