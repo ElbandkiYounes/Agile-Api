@@ -2,8 +2,6 @@ package com.miniprojetspring.Service;
 
 import com.miniprojetspring.Exception.NotFoundException;
 import com.miniprojetspring.Model.Epic;
-import com.miniprojetspring.Model.EpicPriority;
-import com.miniprojetspring.Model.EpicStatus;
 import com.miniprojetspring.Model.ProductBacklog;
 import com.miniprojetspring.Repository.EpicRepository;
 import com.miniprojetspring.payload.CreateEpicPayload;
@@ -11,7 +9,6 @@ import com.miniprojetspring.payload.UpdateEpicPayload;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service

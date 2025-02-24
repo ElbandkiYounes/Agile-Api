@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -107,6 +108,31 @@ public class EpicServiceTest {
         assertThrows(NotFoundException.class, () -> epicService.getEpicById(epicId));
 
         verify(epicRepository, times(1)).findById(epicId);
+    }
+
+    @Test
+    public void testGetEpicsByProductBacklogId_Success() {
+        when(productBacklogService.getProductBacklogById(productBacklogId)).thenReturn(productBacklog);
+        when(epicRepository.findByProductBacklogId(productBacklogId)).thenReturn(List.of(epic));
+
+        List<Epic> epics = epicService.getEpicsByProductBacklogId(productBacklogId);
+
+        assertNotNull(epics);
+        assertFalse(epics.isEmpty());
+        assertEquals(epic.getId(), epics.get(0).getId());
+
+        verify(productBacklogService, times(1)).getProductBacklogById(productBacklogId);
+        verify(epicRepository, times(1)).findByProductBacklogId(productBacklogId);
+    }
+
+    @Test
+    public void testGetEpicsByProductBacklogId_ProductBacklogNotFound() {
+        when(productBacklogService.getProductBacklogById(productBacklogId)).thenReturn(null);
+
+        assertThrows(NotFoundException.class, () -> epicService.getEpicsByProductBacklogId(productBacklogId));
+
+        verify(productBacklogService, times(1)).getProductBacklogById(productBacklogId);
+        verify(epicRepository, never()).findByProductBacklogId(productBacklogId);
     }
 
     @Test
