@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -31,5 +32,8 @@ public class Epic {
 
     @ManyToOne
     private ProductBacklog productBacklog;
+
+    @OneToMany
+    private List<UserStory> userStory;
 
 }

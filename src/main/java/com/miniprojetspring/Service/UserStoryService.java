@@ -1,28 +1,29 @@
 package com.miniprojetspring.Service;
 
 import com.miniprojetspring.Exception.NotFoundException;
+import com.miniprojetspring.Model.Epic;
 import com.miniprojetspring.Model.ProductBacklog;
 import com.miniprojetspring.Model.UserStory;
-import com.miniprojetspring.Repository.ProductBacklogRepository;
 import com.miniprojetspring.Repository.UserStoryRepository;
 import com.miniprojetspring.payload.UserStoryPayload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class UserStoryService {
 
     private final UserStoryRepository userStoryRepository;
-    private final ProductBacklogRepository productBacklogRepository;
+    private final ProductBacklogService productBacklogService;
+    private  final EpicService epicService;
 
     @Autowired
-    public UserStoryService(UserStoryRepository userStoryRepository, ProductBacklogRepository productBacklogRepository) {
+    public UserStoryService(UserStoryRepository userStoryRepository, ProductBacklogService productBacklogService, EpicService epicService) {
         this.userStoryRepository = userStoryRepository;
-        this.productBacklogRepository = productBacklogRepository;
+        this.productBacklogService = productBacklogService;
+        this.epicService = epicService;
     }
 
     public List<UserStory> getAllUserStories() {
@@ -30,9 +31,9 @@ public class UserStoryService {
     }
 
     public UserStory createUserStory(UserStoryPayload userStoryPayload) {
-        Optional<ProductBacklog> productBacklogOptional = productBacklogRepository.findById(UUID.fromString(userStoryPayload.getProductBacklogId()));
-        if (productBacklogOptional.isEmpty()) {
-            throw new NotFoundException("Product Backlog not found.");
+        ProductBacklog productBacklog = productBacklogService.getProductBacklogById(UUID.fromString(userStoryPayload.getProductBacklogId()));
+        if (productBacklog == null) {
+            throw new NotFoundException("Product backlog not found");
         }
 
         UserStory userStory = UserStory.builder()
@@ -40,12 +41,27 @@ public class UserStoryService {
                 .description(userStoryPayload.getDescription())
                 .priority(userStoryPayload.getUserStoryPriority())
                 .status(userStoryPayload.getUserStoryStatus())
-                .productBacklog(productBacklogOptional.get()).build();
+                .productBacklog(productBacklog).build();
 
 
-        userStory.setProductBacklog(productBacklogOptional.get());
+        userStory.setProductBacklog(productBacklog);
 
         return userStoryRepository.save(userStory);
+    }
+
+    public UserStory linkUserStoryToEpic(UUID epicId,UUID userStoryId) {
+        UserStory userStory = getUserStoryById(userStoryId);
+        Epic epic= epicService.getEpicById(epicId);
+        if(epic==null) {
+            throw new NotFoundException("Epic not found.");
+        }
+
+        if(!userStory.getProductBacklog().getId().equals(epic.getProductBacklog().getId())) {
+            throw new NotFoundException("UserStory and Epic not on the same backlog");
+        }
+        userStory.setEpic(epic);
+        return userStoryRepository.save(userStory);
+
     }
 
     public UserStory getUserStoryById(UUID id) {
@@ -56,16 +72,16 @@ public class UserStoryService {
     public UserStory updateUserStory(UserStoryPayload userStoryPayload,UUID id) {
         UserStory userStory = getUserStoryById(id);
 
-        Optional<ProductBacklog> productBacklogOptional = productBacklogRepository.findById(UUID.fromString(userStoryPayload.getProductBacklogId()));
-        if (productBacklogOptional.isEmpty()) {
-            throw new NotFoundException("Product Backlog not found.");
+        ProductBacklog productBacklog = productBacklogService.getProductBacklogById(UUID.fromString(userStoryPayload.getProductBacklogId()));
+        if (productBacklog == null) {
+            throw new NotFoundException("Product backlog not found");
         }
 
         userStory.setTitle(userStoryPayload.getTitle());
         userStory.setDescription(userStoryPayload.getDescription());
         userStory.setPriority(userStoryPayload.getUserStoryPriority());
         userStory.setStatus(userStoryPayload.getUserStoryStatus());
-        userStory.setProductBacklog(productBacklogOptional.get());
+        userStory.setProductBacklog(productBacklog);
 
         return userStoryRepository.save(userStory);
     }

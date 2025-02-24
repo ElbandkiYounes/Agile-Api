@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.UUID;
 
@@ -28,9 +30,11 @@ public class UserStory {
 
     @CreatedDate
     private Date createdAt;
+    private Date dueDate;
+
 
     @ManyToOne
-    private Epic epic;
+    private Epic epic ;
 
     @ManyToOne
     private ProductBacklog productBacklog;
