@@ -1,11 +1,16 @@
 package com.miniprojetspring.payload;
 
+import com.miniprojetspring.Model.Epic;
 import com.miniprojetspring.Model.ProductBacklog;
 import com.miniprojetspring.Model.Project;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.validation.constraints.NotBlank;
+
+import java.util.Collections;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,6 +28,6 @@ public class CreateProductBacklogPayload {
         return ProductBacklog.builder()
                 .name(name)
                 .project(project)
-                .build();}
-
+                .build();
+    }
 }
