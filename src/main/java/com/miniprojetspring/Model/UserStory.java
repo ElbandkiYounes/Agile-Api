@@ -15,16 +15,16 @@ import java.util.UUID;
 @Builder
 public class UserStory {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    UUID id;
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
     @Column(nullable = false)
-    String title;
+    private String title;
     @Column(nullable = false)
     private String description;
     @Enumerated(EnumType.STRING)
-    UserStoryPriority priority;
+    private UserStoryPriority priority;
     @Enumerated(EnumType.STRING)
-    UserStoryStatus status;
+    private UserStoryStatus status;
 
     @CreatedDate
     private Date createdAt;

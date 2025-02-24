@@ -16,8 +16,8 @@ import java.util.UUID;
 public class Project {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID id;
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
     private String name;
     private String description;
     @OneToOne

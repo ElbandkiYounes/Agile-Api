@@ -1,8 +1,6 @@
 package com.miniprojetspring.Model;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,10 +15,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class Epic {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID id;
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
     private String name;
     private String description;
     @CreatedDate
