@@ -17,6 +17,7 @@ public class ProductBacklog {
     @Id
     @Builder.Default
     private UUID id = UUID.randomUUID();
+    @Column(nullable = false)
     private String name;
     @OneToOne
     private Project project;

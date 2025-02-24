@@ -8,7 +8,6 @@ import com.miniprojetspring.payload.CreateProductBacklogPayload;
 import com.miniprojetspring.payload.UpdateProductBacklogPayload;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -23,11 +22,11 @@ public class ProductBacklogService {
     }
 
     public ProductBacklog createProductBacklog(CreateProductBacklogPayload payload) {
-        Optional<Project> project = projectService.getProjectById(UUID.fromString(payload.getProjectId()));
-        if (project.isEmpty()) {
+        Project project = projectService.getProjectById(UUID.fromString(payload.getProjectId()));
+        if (project == null) {
             throw new NotFoundException("Project not found");
         }
-        return productBacklogRepository.save(payload.toEntity(project.get()));
+        return productBacklogRepository.save(payload.toEntity(project));
     }
 
     public ProductBacklog getProductBacklogById(UUID id) {
