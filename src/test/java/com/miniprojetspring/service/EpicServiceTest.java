@@ -4,8 +4,8 @@ import com.miniprojetspring.Exception.NotFoundException;
 import com.miniprojetspring.Model.Epic;
 import com.miniprojetspring.Model.ProductBacklog;
 import com.miniprojetspring.Repository.EpicRepository;
-import com.miniprojetspring.Service.EpicService;
-import com.miniprojetspring.Service.ProductBacklogService;
+import com.miniprojetspring.Service.Implementation.EpicServiceImpl;
+import com.miniprojetspring.Service.Implementation.ProductBacklogServiceImpl;
 import com.miniprojetspring.payload.CreateEpicPayload;
 import com.miniprojetspring.payload.UpdateEpicPayload;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,10 +29,10 @@ public class EpicServiceTest {
     private EpicRepository epicRepository;
 
     @Mock
-    private ProductBacklogService productBacklogService;
+    private ProductBacklogServiceImpl productBacklogServiceImpl;
 
     @InjectMocks
-    private EpicService epicService;
+    private EpicServiceImpl epicService;
 
     private CreateEpicPayload createPayload;
     private UpdateEpicPayload updatePayload;
@@ -65,7 +65,7 @@ public class EpicServiceTest {
 
     @Test
     public void testCreateEpic_Success() {
-        when(productBacklogService.getProductBacklogById(productBacklogId)).thenReturn(productBacklog);
+        when(productBacklogServiceImpl.getProductBacklogById(productBacklogId)).thenReturn(productBacklog);
         when(epicRepository.save(any(Epic.class))).thenReturn(epic);
 
         Epic actualEpic = epicService.createEpic(createPayload);
@@ -74,17 +74,17 @@ public class EpicServiceTest {
         assertEquals(epic.getName(), actualEpic.getName());
         assertEquals(epic.getProductBacklog(), actualEpic.getProductBacklog());
 
-        verify(productBacklogService, times(1)).getProductBacklogById(productBacklogId);
+        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(productBacklogId);
         verify(epicRepository, times(1)).save(any(Epic.class));
     }
 
     @Test
     public void testCreateEpic_ProductBacklogNotFound() {
-        when(productBacklogService.getProductBacklogById(productBacklogId)).thenReturn(null);
+        when(productBacklogServiceImpl.getProductBacklogById(productBacklogId)).thenReturn(null);
 
         assertThrows(NotFoundException.class, () -> epicService.createEpic(createPayload));
 
-        verify(productBacklogService, times(1)).getProductBacklogById(productBacklogId);
+        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(productBacklogId);
         verify(epicRepository, never()).save(any(Epic.class));
     }
 
@@ -112,7 +112,7 @@ public class EpicServiceTest {
 
     @Test
     public void testGetEpicsByProductBacklogId_Success() {
-        when(productBacklogService.getProductBacklogById(productBacklogId)).thenReturn(productBacklog);
+        when(productBacklogServiceImpl.getProductBacklogById(productBacklogId)).thenReturn(productBacklog);
         when(epicRepository.findByProductBacklogId(productBacklogId)).thenReturn(List.of(epic));
 
         List<Epic> epics = epicService.getEpicsByProductBacklogId(productBacklogId);
@@ -121,17 +121,17 @@ public class EpicServiceTest {
         assertFalse(epics.isEmpty());
         assertEquals(epic.getId(), epics.get(0).getId());
 
-        verify(productBacklogService, times(1)).getProductBacklogById(productBacklogId);
+        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(productBacklogId);
         verify(epicRepository, times(1)).findByProductBacklogId(productBacklogId);
     }
 
     @Test
     public void testGetEpicsByProductBacklogId_ProductBacklogNotFound() {
-        when(productBacklogService.getProductBacklogById(productBacklogId)).thenReturn(null);
+        when(productBacklogServiceImpl.getProductBacklogById(productBacklogId)).thenReturn(null);
 
         assertThrows(NotFoundException.class, () -> epicService.getEpicsByProductBacklogId(productBacklogId));
 
-        verify(productBacklogService, times(1)).getProductBacklogById(productBacklogId);
+        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(productBacklogId);
         verify(epicRepository, never()).findByProductBacklogId(productBacklogId);
     }
 

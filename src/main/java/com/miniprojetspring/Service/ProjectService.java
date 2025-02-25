@@ -1,22 +1,9 @@
 package com.miniprojetspring.Service;
 
-import com.miniprojetspring.Exception.NotFoundException;
 import com.miniprojetspring.Model.Project;
-import com.miniprojetspring.Repository.ProjectRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-@Service
-public class ProjectService {
-
-    private final ProjectRepository projectRepository;
-
-    public ProjectService(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
-    }
-
-    public Project getProjectById(UUID uuid) {
-        return projectRepository.findById(uuid).orElseThrow(() -> new NotFoundException("Project not found"));
-    }
+public interface ProjectService {
+    Project getProjectById(UUID uuid);
 }
