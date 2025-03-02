@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.UUID;
 
 public interface UserStoryService {
+    List<UserStory> getUserStoriesByRoleId(String roleId);
     List<UserStory> getUserStoriesByEpicId(String id);
     List<UserStory> getUserStoriesByBacklogId(String id);
-    UserStory createUserStory(UserStoryPayload userStoryPayload);
-    UserStory linkUserStoryToEpic(UUID epicId, UUID userStoryId);
-    UserStory getUserStoryById(UUID id);
-    UserStory updateUserStory(UserStoryPayload userStoryPayload, UUID id);
-    void deleteUserStory(UUID id);
+    UserStory createUserStory(String productBacklogId, UserStoryPayload userStoryPayload);
+    UserStory unlinkUserStoryFromEpic(String userStoryId);
+    UserStory linkUserStoryToEpic(String epicId, String userStoryId);
+    UserStory getUserStoryById(String id);
+    UserStory updateUserStory(UserStoryPayload userStoryPayload, String id);
+    void deleteUserStory(String id);
 }

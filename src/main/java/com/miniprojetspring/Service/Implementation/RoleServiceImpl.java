@@ -31,6 +31,12 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public Role getRoleById(String id) {
+        return roleRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new NotFoundException("Role not found"));
+    }
+
+    @Override
     public Role createRole(String projectId,RolePayload rolePayload) {
         Project project = projectService.getProjectById(projectId);
         if (project == null) {

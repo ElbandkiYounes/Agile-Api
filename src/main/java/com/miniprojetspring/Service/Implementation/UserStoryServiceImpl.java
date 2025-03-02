@@ -3,6 +3,7 @@ package com.miniprojetspring.Service.Implementation;
 import com.miniprojetspring.Exception.NotFoundException;
 import com.miniprojetspring.Model.Epic;
 import com.miniprojetspring.Model.ProductBacklog;
+import com.miniprojetspring.Model.Role;
 import com.miniprojetspring.Model.UserStory;
 import com.miniprojetspring.Repository.UserStoryRepository;
 import com.miniprojetspring.Service.UserStoryService;
@@ -18,13 +19,27 @@ public class UserStoryServiceImpl implements UserStoryService {
 
     private final UserStoryRepository userStoryRepository;
     private final ProductBacklogServiceImpl productBacklogServiceImpl;
-    private  final EpicServiceImpl epicService;
+    private final EpicServiceImpl epicService;
+    private final RoleServiceImpl roleService;
 
     @Autowired
-    public UserStoryServiceImpl(UserStoryRepository userStoryRepository, ProductBacklogServiceImpl productBacklogServiceImpl, EpicServiceImpl epicService) {
+    public UserStoryServiceImpl(
+            UserStoryRepository userStoryRepository,
+            ProductBacklogServiceImpl productBacklogServiceImpl,
+            EpicServiceImpl epicService,
+            RoleServiceImpl roleService) {
         this.userStoryRepository = userStoryRepository;
         this.productBacklogServiceImpl = productBacklogServiceImpl;
         this.epicService = epicService;
+        this.roleService = roleService;
+    }
+
+    public List<UserStory> getUserStoriesByRoleId(String roleId) {
+        Role role = roleService.getRoleById(roleId);
+        if(role==null) {
+            throw new NotFoundException("Role not found.");
+        }
+        return userStoryRepository.findByRoleId(UUID.fromString(roleId));
     }
 
     public List<UserStory> getUserStoriesByEpicId(String EpicId) {
@@ -43,28 +58,26 @@ public class UserStoryServiceImpl implements UserStoryService {
         return userStoryRepository.findUserStoriesByProductBacklogId(UUID.fromString(productBacklogId));
     }
 
-    public UserStory createUserStory(UserStoryPayload userStoryPayload) {
-        ProductBacklog productBacklog = productBacklogServiceImpl.getProductBacklogById(userStoryPayload.getProductBacklogId());
+    public UserStory createUserStory(String productBacklogId, UserStoryPayload userStoryPayload) {
+        ProductBacklog productBacklog = productBacklogServiceImpl.getProductBacklogById(productBacklogId);
         if (productBacklog == null) {
             throw new NotFoundException("Product backlog not found");
         }
 
-        UserStory userStory = UserStory.builder()
-                .title(userStoryPayload.getTitle())
-                .description(userStoryPayload.getDescription())
-                .priority(userStoryPayload.getUserStoryPriority())
-                .status(userStoryPayload.getUserStoryStatus())
-                .productBacklog(productBacklog).build();
+        Role role = roleService.getRoleById(userStoryPayload.getRoleId());
+        if (role == null) {
+            throw new NotFoundException("Role not found");
+        }
 
-
-        userStory.setProductBacklog(productBacklog);
-
-        return userStoryRepository.save(userStory);
+        if (role.getProject().getId() != productBacklog.getProject().getId()) {
+            throw new NotFoundException("Role and Product Backlog not on the same project");
+        }
+        return userStoryRepository.save(userStoryPayload.toEntity(productBacklog,role));
     }
 
-    public UserStory linkUserStoryToEpic(UUID epicId,UUID userStoryId) {
+    public UserStory linkUserStoryToEpic(String epicId,String userStoryId) {
         UserStory userStory = getUserStoryById(userStoryId);
-        Epic epic= epicService.getEpicById(epicId.toString());
+        Epic epic= epicService.getEpicById(epicId);
         if(epic==null) {
             throw new NotFoundException("Epic not found.");
         }
@@ -77,29 +90,33 @@ public class UserStoryServiceImpl implements UserStoryService {
 
     }
 
-    public UserStory getUserStoryById(UUID id) {
-        return userStoryRepository.findById(id)
+    public UserStory unlinkUserStoryFromEpic(String userStoryId) {
+        UserStory userStory = getUserStoryById(userStoryId);
+        userStory.setEpic(null);
+        return userStory;
+    }
+
+    public UserStory getUserStoryById(String id) {
+        return userStoryRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new NotFoundException("User Story not found for ID: " + id));
     }
 
-    public UserStory updateUserStory(UserStoryPayload userStoryPayload,UUID id) {
-        UserStory userStory = getUserStoryById(id);
+    public UserStory updateUserStory(UserStoryPayload userStoryPayload,String userStoryId) {
+        UserStory userStory = getUserStoryById(userStoryId);
 
-        ProductBacklog productBacklog = productBacklogServiceImpl.getProductBacklogById(userStoryPayload.getProductBacklogId());
-        if (productBacklog == null) {
-            throw new NotFoundException("Product backlog not found");
+        Role role = roleService.getRoleById(userStoryPayload.getRoleId());
+        if (role == null) {
+            throw new NotFoundException("Role not found");
         }
 
-        userStory.setTitle(userStoryPayload.getTitle());
-        userStory.setDescription(userStoryPayload.getDescription());
-        userStory.setPriority(userStoryPayload.getUserStoryPriority());
-        userStory.setStatus(userStoryPayload.getUserStoryStatus());
-        userStory.setProductBacklog(productBacklog);
+        if (role.getProject().getId() != userStory.getProductBacklog().getProject().getId()) {
+            throw new NotFoundException("Role and Product Backlog not on the same project");
+        }
 
-        return userStoryRepository.save(userStory);
+        return userStoryRepository.save(userStoryPayload.toEntity(userStory,role));
     }
 
-    public void deleteUserStory(UUID id) {
+    public void deleteUserStory(String id) {
         UserStory userStory = getUserStoryById(id);
         userStoryRepository.delete(userStory);
     }
