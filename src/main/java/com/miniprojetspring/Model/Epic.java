@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -33,7 +34,12 @@ public class Epic {
     @ManyToOne
     private ProductBacklog productBacklog;
 
+    @ManyToOne
+    @Builder.Default
+    private SprintBacklog sprintBacklog = null;
+
     @OneToMany
-    private List<UserStory> userStory;
+    @Builder.Default
+    private List<UserStory> userStory = Collections.emptyList();
 
 }

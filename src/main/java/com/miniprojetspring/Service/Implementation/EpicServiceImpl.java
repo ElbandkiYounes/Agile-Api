@@ -3,6 +3,8 @@ package com.miniprojetspring.Service.Implementation;
 import com.miniprojetspring.Exception.NotFoundException;
 import com.miniprojetspring.Model.Epic;
 import com.miniprojetspring.Model.ProductBacklog;
+import com.miniprojetspring.Model.SprintBacklog;
+import com.miniprojetspring.Model.UserStory;
 import com.miniprojetspring.Repository.EpicRepository;
 import com.miniprojetspring.Service.EpicService;
 import com.miniprojetspring.payload.EpicPayload;
@@ -16,10 +18,14 @@ public class EpicServiceImpl implements EpicService {
 
     private final EpicRepository epicRepository;
     private final ProductBacklogServiceImpl productBacklogServiceImpl;
+    private final SprintBacklogServiceImpl sprintBacklogServiceImpl;
 
-    public EpicServiceImpl(EpicRepository epicRepository, ProductBacklogServiceImpl productBacklogServiceImpl) {
+    public EpicServiceImpl(EpicRepository epicRepository,
+                           ProductBacklogServiceImpl productBacklogServiceImpl,
+                           SprintBacklogServiceImpl sprintBacklogServiceImpl) {
         this.epicRepository = epicRepository;
         this.productBacklogServiceImpl = productBacklogServiceImpl;
+        this.sprintBacklogServiceImpl = sprintBacklogServiceImpl;
     }
 
     public Epic createEpic(String productBacklogId, EpicPayload payload) {
@@ -50,5 +56,25 @@ public class EpicServiceImpl implements EpicService {
     public Epic updateEpic(String id, EpicPayload payload) {
         Epic epic = getEpicById(id);
         return epicRepository.save(payload.toEntity(epic));
+    }
+
+    public Epic linkEpicToSprintBacklog(String sprintBacklogId, String epicId) {
+        Epic epic = getEpicById(epicId);
+        SprintBacklog sprintBacklog = sprintBacklogServiceImpl.getSprintBacklogById(sprintBacklogId);
+
+        if (sprintBacklog == null) {
+            throw new NotFoundException("Sprint Backlog not found.");
+        }
+        if (sprintBacklog.getProject().getId() != epic.getProductBacklog().getProject().getId()) {
+            throw new NotFoundException("Sprint Backlog and Epic not on the same Project");
+        }
+        epic.setSprintBacklog(sprintBacklog);
+        return epicRepository.save(epic);
+    }
+
+    public Epic unlinkEpicToSprintBacklog(String epicId) {
+        Epic epic = getEpicById(epicId);
+        epic.setSprintBacklog(null);
+        return epicRepository.save(epic);
     }
 }
