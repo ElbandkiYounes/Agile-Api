@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -22,6 +24,9 @@ public class Project {
     private String description;
     @OneToOne
     private ProductBacklog productBacklog;
+    @OneToMany
+    @Builder.Default
+    private List<Role> roles = Collections.emptyList();
     @CreatedDate
     private Date CreatedAt;
 }
