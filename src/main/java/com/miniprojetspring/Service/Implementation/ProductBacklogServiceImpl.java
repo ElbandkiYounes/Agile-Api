@@ -5,6 +5,7 @@ import com.miniprojetspring.Model.ProductBacklog;
 import com.miniprojetspring.Model.Project;
 import com.miniprojetspring.Repository.ProductBacklogRepository;
 import com.miniprojetspring.Service.ProductBacklogService;
+import com.miniprojetspring.Service.ProjectService;
 import com.miniprojetspring.payload.ProductBacklogPayload;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +15,9 @@ import java.util.UUID;
 public class ProductBacklogServiceImpl implements ProductBacklogService {
 
     private final ProductBacklogRepository productBacklogRepository;
-    private final ProjectServiceImpl projectServiceImpl;
+    private final ProjectService projectServiceImpl;
 
-    public ProductBacklogServiceImpl(ProductBacklogRepository productBacklogRepository, ProjectServiceImpl projectServiceImpl) {
+    public ProductBacklogServiceImpl(ProductBacklogRepository productBacklogRepository, ProjectService projectServiceImpl) {
         this.productBacklogRepository = productBacklogRepository;
         this.projectServiceImpl = projectServiceImpl;
     }

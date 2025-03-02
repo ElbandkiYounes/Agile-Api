@@ -6,6 +6,9 @@ import com.miniprojetspring.Model.ProductBacklog;
 import com.miniprojetspring.Model.Role;
 import com.miniprojetspring.Model.UserStory;
 import com.miniprojetspring.Repository.UserStoryRepository;
+import com.miniprojetspring.Service.EpicService;
+import com.miniprojetspring.Service.ProductBacklogService;
+import com.miniprojetspring.Service.RoleService;
 import com.miniprojetspring.Service.UserStoryService;
 import com.miniprojetspring.payload.UserStoryPayload;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +21,16 @@ import java.util.UUID;
 public class UserStoryServiceImpl implements UserStoryService {
 
     private final UserStoryRepository userStoryRepository;
-    private final ProductBacklogServiceImpl productBacklogServiceImpl;
-    private final EpicServiceImpl epicService;
-    private final RoleServiceImpl roleService;
+    private final ProductBacklogService productBacklogServiceImpl;
+    private final EpicService epicService;
+    private final RoleService roleService;
 
     @Autowired
     public UserStoryServiceImpl(
             UserStoryRepository userStoryRepository,
-            ProductBacklogServiceImpl productBacklogServiceImpl,
-            EpicServiceImpl epicService,
-            RoleServiceImpl roleService) {
+            ProductBacklogService productBacklogServiceImpl,
+            EpicService epicService,
+            RoleService roleService) {
         this.userStoryRepository = userStoryRepository;
         this.productBacklogServiceImpl = productBacklogServiceImpl;
         this.epicService = epicService;

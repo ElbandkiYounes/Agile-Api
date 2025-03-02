@@ -1,8 +1,6 @@
 package com.miniprojetspring.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.UUID;
@@ -18,10 +16,13 @@ public class TestCase {
     @Builder.Default
     private UUID id = UUID.randomUUID();
 
-    private String name;
+    private String title;
     private String description ;
 
-    @OneToOne
+    @Enumerated(EnumType.STRING)
+    private TestCaseResult result;
+
+    @ManyToOne
     private UserStory userStory;
 
 }
