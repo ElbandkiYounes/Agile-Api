@@ -38,7 +38,7 @@ public class UserStory {
     private Date createdAt;
     private Date dueDate;
 
-    @OneToMany
+    @OneToMany(mappedBy = "userStory", cascade = CascadeType.ALL)
     @Builder.Default
     private List<TestCase> testCases = Collections.emptyList();
 
@@ -48,4 +48,6 @@ public class UserStory {
 
     @ManyToOne
     private ProductBacklog productBacklog;
+
+
 }
