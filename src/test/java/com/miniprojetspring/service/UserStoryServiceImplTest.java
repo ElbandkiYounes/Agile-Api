@@ -79,7 +79,7 @@ public class UserStoryServiceImplTest {
 
     @Test
     public void testCreateUserStory_Success() {
-        when(productBacklogServiceImpl.getProductBacklogById(productBacklogId)).thenReturn(productBacklog);
+        when(productBacklogServiceImpl.getProductBacklogById(String.valueOf(productBacklogId))).thenReturn(productBacklog);
         when(userStoryRepository.save(any(UserStory.class))).thenReturn(userStory);
 
         UserStory createdUserStory = userStoryServiceImpl.createUserStory(payload);
@@ -88,17 +88,17 @@ public class UserStoryServiceImplTest {
         assertEquals(payload.getTitle(), createdUserStory.getTitle());
         assertEquals(payload.getDescription(), createdUserStory.getDescription());
 
-        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(productBacklogId);
+        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(String.valueOf(productBacklogId));
         verify(userStoryRepository, times(1)).save(any(UserStory.class));
     }
 
     @Test
     public void testCreateUserStory_ProductBacklogNotFound() {
-        when(productBacklogServiceImpl.getProductBacklogById(productBacklogId)).thenThrow(new NotFoundException("Product backlog not found"));
+        when(productBacklogServiceImpl.getProductBacklogById(String.valueOf(productBacklogId))).thenThrow(new NotFoundException("Product backlog not found"));
 
         assertThrows(NotFoundException.class, () -> userStoryServiceImpl.createUserStory(payload));
 
-        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(productBacklogId);
+        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(String.valueOf(productBacklogId));
         verify(userStoryRepository, never()).save(userStory);
     }
 
@@ -126,7 +126,7 @@ public class UserStoryServiceImplTest {
     @Test
     public void testUpdateUserStory_Success() {
         when(userStoryRepository.findById(userStoryId)).thenReturn(Optional.of(userStory));
-        when(productBacklogServiceImpl.getProductBacklogById(productBacklogId)).thenReturn(productBacklog);
+        when(productBacklogServiceImpl.getProductBacklogById(String.valueOf(productBacklogId))).thenReturn(productBacklog);
         when(userStoryRepository.save(userStory)).thenReturn(userStory);
 
         UserStory updatedUserStory = userStoryServiceImpl.updateUserStory(payload, userStoryId);
@@ -136,7 +136,7 @@ public class UserStoryServiceImplTest {
         assertEquals(payload.getDescription(), updatedUserStory.getDescription());
 
         verify(userStoryRepository, times(1)).findById(userStoryId);
-        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(productBacklogId);
+        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(String.valueOf(productBacklogId));
         verify(userStoryRepository, times(1)).save(userStory);
     }
 
@@ -173,7 +173,7 @@ public class UserStoryServiceImplTest {
     @Test
     public void testLinkUserStoryToEpic_Success() {
         when(userStoryRepository.findById(userStoryId)).thenReturn(Optional.of(userStory));
-        when(epicServiceImpl.getEpicById(epicId)).thenReturn(epic);
+        when(epicServiceImpl.getEpicById(epicId.toString())).thenReturn(epic);
         when(userStoryRepository.save(userStory)).thenReturn(userStory);
 
         UserStory linkedUserStory = userStoryServiceImpl.linkUserStoryToEpic(epicId, userStoryId);
@@ -182,19 +182,19 @@ public class UserStoryServiceImplTest {
         assertEquals(epic, linkedUserStory.getEpic());
 
         verify(userStoryRepository, times(1)).findById(userStoryId);
-        verify(epicServiceImpl, times(1)).getEpicById(epicId);
+        verify(epicServiceImpl, times(1)).getEpicById(epicId.toString());
         verify(userStoryRepository, times(1)).save(userStory);
     }
 
     @Test
     public void testLinkUserStoryToEpic_EpicNotFound() {
         when(userStoryRepository.findById(userStoryId)).thenReturn(Optional.of(userStory));
-        when(epicServiceImpl.getEpicById(epicId)).thenThrow(new NotFoundException("Epic not found."));
+        when(epicServiceImpl.getEpicById(epicId.toString())).thenThrow(new NotFoundException("Epic not found."));
 
         assertThrows(NotFoundException.class, () -> userStoryServiceImpl.linkUserStoryToEpic(epicId, userStoryId));
 
         verify(userStoryRepository, times(1)).findById(userStoryId);
-        verify(epicServiceImpl, times(1)).getEpicById(epicId);
+        verify(epicServiceImpl, times(1)).getEpicById(epicId.toString());
         verify(userStoryRepository, never()).save(userStory);
     }
 }

@@ -5,8 +5,7 @@ import com.miniprojetspring.Model.ProductBacklog;
 import com.miniprojetspring.Model.Project;
 import com.miniprojetspring.Repository.ProductBacklogRepository;
 import com.miniprojetspring.Service.ProductBacklogService;
-import com.miniprojetspring.payload.CreateProductBacklogPayload;
-import com.miniprojetspring.payload.UpdateProductBacklogPayload;
+import com.miniprojetspring.payload.ProductBacklogPayload;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -22,24 +21,24 @@ public class ProductBacklogServiceImpl implements ProductBacklogService {
         this.projectServiceImpl = projectServiceImpl;
     }
 
-    public ProductBacklog createProductBacklog(CreateProductBacklogPayload payload) {
-        Project project = projectServiceImpl.getProjectById(UUID.fromString(payload.getProjectId()));
+    public ProductBacklog createProductBacklog(String projectId,ProductBacklogPayload payload) {
+        Project project = projectServiceImpl.getProjectById(projectId);
         if (project == null) {
             throw new NotFoundException("Project not found");
         }
         return productBacklogRepository.save(payload.toEntity(project));
     }
 
-    public ProductBacklog getProductBacklogById(UUID id) {
-        return productBacklogRepository.findById(id).orElseThrow(() -> new NotFoundException("Product Backlog not found"));
+    public ProductBacklog getProductBacklogById(String id) {
+        return productBacklogRepository.findById(UUID.fromString(id)).orElseThrow(() -> new NotFoundException("Product Backlog not found"));
     }
 
-    public void deleteProductBacklog(UUID id) {
+    public void deleteProductBacklog(String id) {
         getProductBacklogById(id);
-        productBacklogRepository.deleteById(id);
+        productBacklogRepository.deleteById(UUID.fromString(id));
     }
 
-    public ProductBacklog updateProductBacklog(UUID id, UpdateProductBacklogPayload payload) {
+    public ProductBacklog updateProductBacklog(String id, ProductBacklogPayload payload) {
         ProductBacklog productBacklog = getProductBacklogById(id);
         return productBacklogRepository.save(payload.ToEntity(productBacklog));
     }

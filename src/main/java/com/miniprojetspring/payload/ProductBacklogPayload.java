@@ -14,7 +14,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class CreateProductBacklogPayload {
+public class ProductBacklogPayload {
 
     @NotBlank(message = "name is required (Cannot be blank)")
     @NotNull(message = "name is required (Cannot be null)")
@@ -29,5 +29,10 @@ public class CreateProductBacklogPayload {
                 .name(name)
                 .project(project)
                 .build();
+    }
+
+    public ProductBacklog ToEntity(ProductBacklog productBacklog) {
+        productBacklog.setName(this.getName());
+        return productBacklog;
     }
 }

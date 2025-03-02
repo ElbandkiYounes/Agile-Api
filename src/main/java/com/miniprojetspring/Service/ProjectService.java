@@ -5,5 +5,5 @@ import com.miniprojetspring.Model.Project;
 import java.util.UUID;
 
 public interface ProjectService {
-    Project getProjectById(UUID uuid);
+    Project getProjectById(String id);
 }

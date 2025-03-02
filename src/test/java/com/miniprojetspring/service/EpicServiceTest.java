@@ -6,8 +6,7 @@ import com.miniprojetspring.Model.ProductBacklog;
 import com.miniprojetspring.Repository.EpicRepository;
 import com.miniprojetspring.Service.Implementation.EpicServiceImpl;
 import com.miniprojetspring.Service.Implementation.ProductBacklogServiceImpl;
-import com.miniprojetspring.payload.CreateEpicPayload;
-import com.miniprojetspring.payload.UpdateEpicPayload;
+import com.miniprojetspring.payload.EpicPayload;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,8 +33,8 @@ public class EpicServiceTest {
     @InjectMocks
     private EpicServiceImpl epicService;
 
-    private CreateEpicPayload createPayload;
-    private UpdateEpicPayload updatePayload;
+    private EpicPayload createPayload;
+    private EpicPayload updatePayload;
     private ProductBacklog productBacklog;
     private Epic epic;
     private UUID epicId;
@@ -46,11 +45,10 @@ public class EpicServiceTest {
         productBacklogId = UUID.randomUUID();
         epicId = UUID.randomUUID();
 
-        createPayload = new CreateEpicPayload();
+        createPayload = new EpicPayload();
         createPayload.setName("Test Epic");
-        createPayload.setProductBacklogId(productBacklogId.toString());
 
-        updatePayload = new UpdateEpicPayload();
+        updatePayload = new EpicPayload();
         updatePayload.setName("Updated Epic");
 
         productBacklog = new ProductBacklog();
@@ -65,26 +63,27 @@ public class EpicServiceTest {
 
     @Test
     public void testCreateEpic_Success() {
-        when(productBacklogServiceImpl.getProductBacklogById(productBacklogId)).thenReturn(productBacklog);
+        when(productBacklogServiceImpl.getProductBacklogById(String.valueOf(productBacklogId))).thenReturn(productBacklog);
         when(epicRepository.save(any(Epic.class))).thenReturn(epic);
 
-        Epic actualEpic = epicService.createEpic(createPayload);
+        Epic actualEpic = epicService.createEpic(productBacklogId.toString(), createPayload);
 
         assertNotNull(actualEpic);
         assertEquals(epic.getName(), actualEpic.getName());
         assertEquals(epic.getProductBacklog(), actualEpic.getProductBacklog());
 
-        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(productBacklogId);
+        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(String.valueOf(productBacklogId));
         verify(epicRepository, times(1)).save(any(Epic.class));
     }
 
     @Test
     public void testCreateEpic_ProductBacklogNotFound() {
-        when(productBacklogServiceImpl.getProductBacklogById(productBacklogId)).thenReturn(null);
+        UUID notFoundProductBacklogId = UUID.randomUUID();
+        when(productBacklogServiceImpl.getProductBacklogById(String.valueOf(notFoundProductBacklogId))).thenReturn(null);
 
-        assertThrows(NotFoundException.class, () -> epicService.createEpic(createPayload));
+        assertThrows(NotFoundException.class, () -> epicService.createEpic(notFoundProductBacklogId.toString(), createPayload));
 
-        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(productBacklogId);
+        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(String.valueOf(notFoundProductBacklogId));
         verify(epicRepository, never()).save(any(Epic.class));
     }
 
@@ -92,7 +91,7 @@ public class EpicServiceTest {
     public void testGetEpicById_Success() {
         when(epicRepository.findById(epicId)).thenReturn(Optional.of(epic));
 
-        Epic actualEpic = epicService.getEpicById(epicId);
+        Epic actualEpic = epicService.getEpicById(epicId.toString());
 
         assertNotNull(actualEpic);
         assertEquals(epic.getId(), actualEpic.getId());
@@ -105,33 +104,33 @@ public class EpicServiceTest {
     public void testGetEpicById_NotFound() {
         when(epicRepository.findById(epicId)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> epicService.getEpicById(epicId));
+        assertThrows(NotFoundException.class, () -> epicService.getEpicById(epicId.toString()));
 
         verify(epicRepository, times(1)).findById(epicId);
     }
 
     @Test
     public void testGetEpicsByProductBacklogId_Success() {
-        when(productBacklogServiceImpl.getProductBacklogById(productBacklogId)).thenReturn(productBacklog);
+        when(productBacklogServiceImpl.getProductBacklogById(String.valueOf(productBacklogId))).thenReturn(productBacklog);
         when(epicRepository.findByProductBacklogId(productBacklogId)).thenReturn(List.of(epic));
 
-        List<Epic> epics = epicService.getEpicsByProductBacklogId(productBacklogId);
+        List<Epic> epics = epicService.getEpicsByProductBacklogId(productBacklogId.toString());
 
         assertNotNull(epics);
         assertFalse(epics.isEmpty());
         assertEquals(epic.getId(), epics.get(0).getId());
 
-        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(productBacklogId);
+        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(String.valueOf(productBacklogId));
         verify(epicRepository, times(1)).findByProductBacklogId(productBacklogId);
     }
 
     @Test
     public void testGetEpicsByProductBacklogId_ProductBacklogNotFound() {
-        when(productBacklogServiceImpl.getProductBacklogById(productBacklogId)).thenReturn(null);
+        when(productBacklogServiceImpl.getProductBacklogById(String.valueOf(productBacklogId))).thenReturn(null);
 
-        assertThrows(NotFoundException.class, () -> epicService.getEpicsByProductBacklogId(productBacklogId));
+        assertThrows(NotFoundException.class, () -> epicService.getEpicsByProductBacklogId(productBacklogId.toString()));
 
-        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(productBacklogId);
+        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(String.valueOf(productBacklogId));
         verify(epicRepository, never()).findByProductBacklogId(productBacklogId);
     }
 
@@ -139,7 +138,7 @@ public class EpicServiceTest {
     public void testDeleteEpic_Success() {
         when(epicRepository.findById(epicId)).thenReturn(Optional.of(epic));
 
-        epicService.deleteEpic(epicId);
+        epicService.deleteEpic(epicId.toString());
 
         verify(epicRepository, times(1)).findById(epicId);
         verify(epicRepository, times(1)).deleteById(epicId);
@@ -149,7 +148,7 @@ public class EpicServiceTest {
     public void testDeleteEpic_NotFound() {
         when(epicRepository.findById(epicId)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> epicService.deleteEpic(epicId));
+        assertThrows(NotFoundException.class, () -> epicService.deleteEpic(epicId.toString()));
 
         verify(epicRepository, times(1)).findById(epicId);
         verify(epicRepository, never()).deleteById(epicId);
@@ -160,7 +159,7 @@ public class EpicServiceTest {
         when(epicRepository.findById(epicId)).thenReturn(Optional.of(epic));
         when(epicRepository.save(any(Epic.class))).thenReturn(epic);
 
-        Epic actualEpic = epicService.updateEpic(epicId, updatePayload);
+        Epic actualEpic = epicService.updateEpic(epicId.toString(), updatePayload);
 
         assertNotNull(actualEpic);
         assertEquals(updatePayload.getName(), actualEpic.getName());
@@ -173,7 +172,7 @@ public class EpicServiceTest {
     public void testUpdateEpic_NotFound() {
         when(epicRepository.findById(epicId)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> epicService.updateEpic(epicId, updatePayload));
+        assertThrows(NotFoundException.class, () -> epicService.updateEpic(epicId.toString(), updatePayload));
 
         verify(epicRepository, times(1)).findById(epicId);
         verify(epicRepository, never()).save(any(Epic.class));
