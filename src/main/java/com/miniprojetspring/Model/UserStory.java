@@ -43,7 +43,8 @@ public class UserStory {
     private List<TestCase> testCases = Collections.emptyList();
 
     @ManyToOne
-    private Epic epic;
+    @Builder.Default
+    private Epic epic = null;
 
     @ManyToOne
     private ProductBacklog productBacklog;

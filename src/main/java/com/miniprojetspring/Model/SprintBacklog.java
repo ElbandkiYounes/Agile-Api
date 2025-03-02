@@ -35,5 +35,4 @@ public class SprintBacklog {
     @OneToMany
     @Builder.Default
     private List<Epic> epics =  Collections.emptyList();
-
 }

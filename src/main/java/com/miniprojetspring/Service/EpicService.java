@@ -11,4 +11,6 @@ public interface EpicService {
     List<Epic> getEpicsByProductBacklogId(String productBacklogId);
     void deleteEpic(String id);
     Epic updateEpic(String id, EpicPayload payload);
+    Epic linkEpicToSprintBacklog(String sprintBacklogId, String epicId);
+    Epic unlinkEpicToSprintBacklog(String epicId);
 }
