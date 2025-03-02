@@ -4,7 +4,6 @@ import com.miniprojetspring.Model.Role;
 import com.miniprojetspring.payload.RolePayload;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface RoleService {
     Role getRoleByNameAndProjectId(String name, String projectId);

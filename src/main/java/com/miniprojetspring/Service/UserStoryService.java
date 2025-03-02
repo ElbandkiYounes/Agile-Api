@@ -4,7 +4,6 @@ import com.miniprojetspring.Model.UserStory;
 import com.miniprojetspring.payload.UserStoryPayload;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface UserStoryService {
     List<UserStory> getUserStoriesByRoleId(String roleId);
