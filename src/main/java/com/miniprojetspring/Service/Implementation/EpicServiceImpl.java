@@ -6,6 +6,8 @@ import com.miniprojetspring.Model.ProductBacklog;
 import com.miniprojetspring.Model.SprintBacklog;
 import com.miniprojetspring.Repository.EpicRepository;
 import com.miniprojetspring.Service.EpicService;
+import com.miniprojetspring.Service.ProductBacklogService;
+import com.miniprojetspring.Service.SprintBacklogService;
 import com.miniprojetspring.payload.EpicPayload;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +18,12 @@ import java.util.UUID;
 public class EpicServiceImpl implements EpicService {
 
     private final EpicRepository epicRepository;
-    private final ProductBacklogServiceImpl productBacklogServiceImpl;
-    private final SprintBacklogServiceImpl sprintBacklogServiceImpl;
+    private final ProductBacklogService productBacklogServiceImpl;
+    private final SprintBacklogService sprintBacklogServiceImpl;
 
     public EpicServiceImpl(EpicRepository epicRepository,
-                           ProductBacklogServiceImpl productBacklogServiceImpl,
-                           SprintBacklogServiceImpl sprintBacklogServiceImpl) {
+                           ProductBacklogService productBacklogServiceImpl,
+                           SprintBacklogService sprintBacklogServiceImpl) {
         this.epicRepository = epicRepository;
         this.productBacklogServiceImpl = productBacklogServiceImpl;
         this.sprintBacklogServiceImpl = sprintBacklogServiceImpl;

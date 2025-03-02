@@ -4,6 +4,7 @@ import com.miniprojetspring.Exception.NotFoundException;
 import com.miniprojetspring.Model.SprintBacklog;
 import com.miniprojetspring.Model.Project;
 import com.miniprojetspring.Repository.SprintBacklogRepository;
+import com.miniprojetspring.Service.ProjectService;
 import com.miniprojetspring.Service.SprintBacklogService;
 import com.miniprojetspring.payload.SprintBacklogPayload;
 import org.springframework.stereotype.Service;
@@ -14,9 +15,9 @@ import java.util.UUID;
 public class SprintBacklogServiceImpl implements SprintBacklogService {
 
     private final SprintBacklogRepository sprintBacklogRepository;
-    private final ProjectServiceImpl projectServiceImpl;
+    private final ProjectService projectServiceImpl;
 
-    public SprintBacklogServiceImpl(SprintBacklogRepository sprintBacklogRepository, ProjectServiceImpl projectServiceImpl) {
+    public SprintBacklogServiceImpl(SprintBacklogRepository sprintBacklogRepository, ProjectService projectServiceImpl) {
         this.sprintBacklogRepository = sprintBacklogRepository;
         this.projectServiceImpl = projectServiceImpl;
     }

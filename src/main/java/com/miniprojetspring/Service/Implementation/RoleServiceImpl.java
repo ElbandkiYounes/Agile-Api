@@ -5,6 +5,7 @@ import com.miniprojetspring.Exception.NotFoundException;
 import com.miniprojetspring.Model.Project;
 import com.miniprojetspring.Model.Role;
 import com.miniprojetspring.Repository.RoleRepository;
+import com.miniprojetspring.Service.ProjectService;
 import com.miniprojetspring.Service.RoleService;
 import com.miniprojetspring.payload.RolePayload;
 import org.springframework.stereotype.Service;
@@ -17,9 +18,9 @@ import java.util.UUID;
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
-    private final ProjectServiceImpl projectService;
+    private final ProjectService projectService;
 
-    public RoleServiceImpl(RoleRepository roleRepository, ProjectServiceImpl projectService) {
+    public RoleServiceImpl(RoleRepository roleRepository, ProjectService projectService) {
         this.roleRepository = roleRepository;
         this.projectService = projectService;
     }
