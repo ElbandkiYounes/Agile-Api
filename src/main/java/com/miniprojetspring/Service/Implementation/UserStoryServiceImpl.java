@@ -27,8 +27,20 @@ public class UserStoryServiceImpl implements UserStoryService {
         this.epicService = epicService;
     }
 
-    public List<UserStory> getAllUserStories() {
-        return userStoryRepository.findAll();
+    public List<UserStory> getUserStoriesByEpicId(String EpicId) {
+        Epic epic = epicService.getEpicById(EpicId);
+        if(epic==null) {
+            throw new NotFoundException("Epic not found.");
+        }
+        return userStoryRepository.findByEpicId(UUID.fromString(EpicId));
+    }
+
+    public List<UserStory> getUserStoriesByBacklogId(String productBacklogId) {
+        ProductBacklog productBacklog = productBacklogServiceImpl.getProductBacklogById(productBacklogId);
+        if(productBacklog==null) {
+            throw new NotFoundException("Product backlog not found.");
+        }
+        return userStoryRepository.findUserStoriesByProductBacklogId(UUID.fromString(productBacklogId));
     }
 
     public UserStory createUserStory(UserStoryPayload userStoryPayload) {

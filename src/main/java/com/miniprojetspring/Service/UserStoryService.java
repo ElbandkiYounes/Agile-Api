@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface UserStoryService {
-    List<UserStory> getAllUserStories();
+    List<UserStory> getUserStoriesByEpicId(String id);
+    List<UserStory> getUserStoriesByBacklogId(String id);
     UserStory createUserStory(UserStoryPayload userStoryPayload);
     UserStory linkUserStoryToEpic(UUID epicId, UUID userStoryId);
     UserStory getUserStoryById(UUID id);

@@ -20,7 +20,7 @@ public class UserStoryPayload {
     private String productBacklogId;
 
     @NotBlank(message = "Role Name is required")
-    private String roleName;
+    private String roleId;
 
     @NotBlank(message = "Goal cannot be blank")
     private String goal;

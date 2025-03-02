@@ -1,8 +1,6 @@
 package com.miniprojetspring.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.UUID;
@@ -13,6 +11,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "roles", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"project_id", "name"})
+})
 public class Role {
     @Id
     @Builder.Default
@@ -20,6 +21,7 @@ public class Role {
     private String name;
     private String description;
     @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
 }
