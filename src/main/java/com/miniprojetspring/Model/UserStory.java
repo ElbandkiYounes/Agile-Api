@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -27,14 +27,23 @@ public class UserStory {
     private UserStoryPriority priority;
     @Enumerated(EnumType.STRING)
     private UserStoryStatus status;
+    @ManyToOne
+    private Role role;
+    @Column(nullable = false)
+    private String goal;
+    @Column(nullable = false)
+    private String desire;
 
     @CreatedDate
     private Date createdAt;
     private Date dueDate;
 
+    @OneToMany
+    @Builder.Default
+    private List<TestCase> testCases = Collections.emptyList();
 
     @ManyToOne
-    private Epic epic ;
+    private Epic epic;
 
     @ManyToOne
     private ProductBacklog productBacklog;

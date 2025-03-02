@@ -20,6 +20,15 @@ public class UserStoryPayload {
     @NotBlank(message = "Product Backlog ID is required")
     private String productBacklogId;
 
+    @NotBlank(message = "Role Name is required")
+    private String roleName;
+
+    @NotBlank(message = "Goal cannot be blank")
+    private String goal;
+
+    @NotBlank(message = "Desire cannot be blank")
+    private String desire;
+
     @NotNull(message = "Priority is required")
     private UserStoryPriority userStoryPriority;
 
