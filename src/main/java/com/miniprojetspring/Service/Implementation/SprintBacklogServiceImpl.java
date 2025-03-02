@@ -1,10 +1,8 @@
 package com.miniprojetspring.Service.Implementation;
 
 import com.miniprojetspring.Exception.NotFoundException;
-import com.miniprojetspring.Model.Epic;
 import com.miniprojetspring.Model.SprintBacklog;
 import com.miniprojetspring.Model.Project;
-import com.miniprojetspring.Model.UserStory;
 import com.miniprojetspring.Repository.SprintBacklogRepository;
 import com.miniprojetspring.Service.SprintBacklogService;
 import com.miniprojetspring.payload.SprintBacklogPayload;

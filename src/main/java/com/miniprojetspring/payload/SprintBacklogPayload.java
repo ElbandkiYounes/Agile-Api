@@ -1,6 +1,5 @@
 package com.miniprojetspring.payload;
 
-import com.miniprojetspring.Model.ProductBacklog;
 import com.miniprojetspring.Model.Project;
 import com.miniprojetspring.Model.SprintBacklog;
 import jakarta.validation.constraints.NotBlank;

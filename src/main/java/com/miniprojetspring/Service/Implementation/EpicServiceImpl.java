@@ -4,7 +4,6 @@ import com.miniprojetspring.Exception.NotFoundException;
 import com.miniprojetspring.Model.Epic;
 import com.miniprojetspring.Model.ProductBacklog;
 import com.miniprojetspring.Model.SprintBacklog;
-import com.miniprojetspring.Model.UserStory;
 import com.miniprojetspring.Repository.EpicRepository;
 import com.miniprojetspring.Service.EpicService;
 import com.miniprojetspring.payload.EpicPayload;
