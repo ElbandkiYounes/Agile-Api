@@ -4,7 +4,6 @@ import com.miniprojetspring.Model.Epic;
 import com.miniprojetspring.payload.EpicPayload;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface EpicService {
     Epic createEpic(String id,EpicPayload payload);
