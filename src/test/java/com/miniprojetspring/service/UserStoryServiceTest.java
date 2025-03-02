@@ -3,6 +3,7 @@ package com.miniprojetspring.service;
 import com.miniprojetspring.Exception.NotFoundException;
 import com.miniprojetspring.Model.*;
 import com.miniprojetspring.Repository.UserStoryRepository;
+import com.miniprojetspring.Repository.TestCaseRepository;
 import com.miniprojetspring.Service.Implementation.EpicServiceImpl;
 import com.miniprojetspring.Service.Implementation.ProductBacklogServiceImpl;
 import com.miniprojetspring.Service.Implementation.RoleServiceImpl;
@@ -36,6 +37,9 @@ public class UserStoryServiceTest {
 
     @Mock
     private RoleServiceImpl roleService;
+
+    @Mock
+    private TestCaseRepository testCaseRepository;
 
     @InjectMocks
     private UserStoryServiceImpl userStoryServiceImpl;
@@ -95,6 +99,7 @@ public class UserStoryServiceTest {
                 .description(userStoryPayload.getDescription())
                 .productBacklog(productBacklog)
                 .role(role)
+                .status(UserStoryStatus.IN_PROGRESS)
                 .build();
     }
 
@@ -322,5 +327,106 @@ public class UserStoryServiceTest {
 
         verify(userStoryRepository, times(1)).findById(userStoryId);
         verify(userStoryRepository, never()).delete(any(UserStory.class));
+    }
+
+    @Test
+    public void testCheckUserStoryStatus_AllTestCasesPassed() {
+        // Arrange
+        TestCase testCase1 = TestCase.builder()
+                .id(UUID.randomUUID())
+                .result(TestCaseResult.PASS)
+                .build();
+        TestCase testCase2 = TestCase.builder()
+                .id(UUID.randomUUID())
+                .result(TestCaseResult.PASS)
+                .build();
+        List<TestCase> testCases = List.of(testCase1, testCase2);
+
+        when(userStoryRepository.findById(userStoryId)).thenReturn(Optional.of(userStory));
+        when(testCaseRepository.findTestCasesByUserStoryId(userStoryId)).thenReturn(testCases);
+
+        // Act
+        userStoryServiceImpl.checkUserStoryStatus(userStoryId.toString());
+
+        // Assert
+        assertEquals(UserStoryStatus.DONE, userStory.getStatus());
+        verify(userStoryRepository, times(1)).save(userStory);
+    }
+
+    @Test
+    public void testCheckUserStoryStatus_SomeTestCasesFailed() {
+        // Arrange
+        TestCase testCase1 = TestCase.builder()
+                .id(UUID.randomUUID())
+                .result(TestCaseResult.PASS)
+                .build();
+        TestCase testCase2 = TestCase.builder()
+                .id(UUID.randomUUID())
+                .result(TestCaseResult.FAIL)
+                .build();
+        List<TestCase> testCases = List.of(testCase1, testCase2);
+
+        when(userStoryRepository.findById(userStoryId)).thenReturn(Optional.of(userStory));
+        when(testCaseRepository.findTestCasesByUserStoryId(userStoryId)).thenReturn(testCases);
+
+        // Act
+        userStoryServiceImpl.checkUserStoryStatus(userStoryId.toString());
+
+        // Assert
+        assertEquals(UserStoryStatus.IN_PROGRESS, userStory.getStatus());
+        verify(userStoryRepository, times(1)).save(userStory);
+    }
+
+    @Test
+    public void testCheckUserStoryStatus_NoTestCases() {
+        // Arrange
+        List<TestCase> testCases = List.of();
+
+        when(userStoryRepository.findById(userStoryId)).thenReturn(Optional.of(userStory));
+        when(testCaseRepository.findTestCasesByUserStoryId(userStoryId)).thenReturn(testCases);
+
+        // Act
+        userStoryServiceImpl.checkUserStoryStatus(userStoryId.toString());
+
+        // Assert
+        assertEquals(UserStoryStatus.NOT_STARTED, userStory.getStatus());
+        verify(userStoryRepository, times(1)).save(userStory);
+    }
+
+    @Test
+    public void testCheckUserStoryStatus_NullResultInTestCases() {
+        // Arrange
+        TestCase testCase1 = TestCase.builder()
+                .id(UUID.randomUUID())
+                .result(TestCaseResult.PASS)
+                .build();
+        TestCase testCase2 = TestCase.builder()
+                .id(UUID.randomUUID())
+                .result(null) // Null result
+                .build();
+        List<TestCase> testCases = List.of(testCase1, testCase2);
+
+        when(userStoryRepository.findById(userStoryId)).thenReturn(Optional.of(userStory));
+        when(testCaseRepository.findTestCasesByUserStoryId(userStoryId)).thenReturn(testCases);
+
+        // Act
+        userStoryServiceImpl.checkUserStoryStatus(userStoryId.toString());
+
+        // Assert
+        assertEquals(UserStoryStatus.IN_PROGRESS, userStory.getStatus());
+        verify(userStoryRepository, times(1)).save(userStory);
+    }
+
+    @Test
+    public void testCheckUserStoryStatus_UserStoryNotFound() {
+        // Arrange
+        when(userStoryRepository.findById(userStoryId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(NotFoundException.class, () -> userStoryServiceImpl.checkUserStoryStatus(userStoryId.toString()));
+
+        verify(userStoryRepository, times(1)).findById(userStoryId);
+        verify(testCaseRepository, never()).findTestCasesByUserStoryId(any());
+        verify(userStoryRepository, never()).save(any());
     }
 }

@@ -1,4 +1,4 @@
-package com.miniprojetspring.Service;
+package com.miniprojetspring.service;
 
 import com.miniprojetspring.Exception.NotFoundException;
 import com.miniprojetspring.Model.TestCase;
