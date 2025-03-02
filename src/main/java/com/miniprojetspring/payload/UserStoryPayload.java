@@ -16,9 +16,6 @@ public class UserStoryPayload {
     @NotBlank(message = "Description cannot be blank")
     private String description;
 
-    @NotBlank(message = "Product Backlog ID is required")
-    private String productBacklogId;
-
     @NotBlank(message = "Role Name is required")
     private String roleId;
 

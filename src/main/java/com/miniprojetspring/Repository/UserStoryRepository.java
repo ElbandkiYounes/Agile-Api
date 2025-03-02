@@ -9,4 +9,5 @@ import java.util.UUID;
 public interface UserStoryRepository extends JpaRepository<UserStory, UUID> {
     List<UserStory> findByEpicId(UUID epicId);
     List<UserStory> findUserStoriesByProductBacklogId(UUID epicId);
+    List<UserStory> findByRoleId(UUID roleId);
 }

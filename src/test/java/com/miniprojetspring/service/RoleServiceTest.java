@@ -215,4 +215,26 @@ public class RoleServiceTest {
         verify(roleRepository, times(1)).findById(roleId);
         verify(roleRepository, never()).delete(role);
     }
+
+    @Test
+    public void testGetRoleById_Success() {
+        when(roleRepository.findById(roleId)).thenReturn(Optional.of(role));
+
+        Role actualRole = roleService.getRoleById(roleId.toString());
+
+        assertNotNull(actualRole);
+        assertEquals(role.getId(), actualRole.getId());
+        assertEquals(role.getName(), actualRole.getName());
+
+        verify(roleRepository, times(1)).findById(roleId);
+    }
+
+    @Test
+    public void testGetRoleById_NotFound() {
+        when(roleRepository.findById(roleId)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> roleService.getRoleById(roleId.toString()));
+
+        verify(roleRepository, times(1)).findById(roleId);
+    }
 }
