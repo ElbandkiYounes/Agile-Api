@@ -126,15 +126,24 @@ public class UserStoryServiceImpl implements UserStoryService {
 
     @Override
     public void checkUserStoryStatus(String id) {
-        UserStory userStory= getUserStoryById(id);
+        UserStory userStory = getUserStoryById(id);
         List<TestCase> testCases = testCaseRepository.findTestCasesByUserStoryId(UUID.fromString(id));
-        boolean allTestCasePassed = testCases.stream().allMatch(testCase -> testCase.getResult().equals(TestCaseResult.PASS));
-         if(allTestCasePassed){
-                userStory.setStatus(UserStoryStatus.DONE);
-         }
-         else {
-             userStory.setStatus(UserStoryStatus.IN_PROGRESS);
-         }
-         userStoryRepository.save(userStory);
+
+        if (testCases.isEmpty()) {
+            userStory.setStatus(UserStoryStatus.NOT_STARTED);
+            userStoryRepository.save(userStory);
+            return;
+        }
+
+        boolean allTestCasePassed = testCases.stream()
+                .allMatch(testCase -> testCase.getResult() != null && testCase.getResult().equals(TestCaseResult.PASS));
+
+        if (allTestCasePassed) {
+            userStory.setStatus(UserStoryStatus.DONE);
+        } else {
+            userStory.setStatus(UserStoryStatus.IN_PROGRESS);
+        }
+
+        userStoryRepository.save(userStory);
     }
 }

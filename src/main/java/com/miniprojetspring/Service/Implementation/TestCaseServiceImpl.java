@@ -51,6 +51,7 @@ public class TestCaseServiceImpl implements TestCaseService {
         if (!existingTestCase.getUserStory().equals(userStory)) {
             throw new NotFoundException("Test case does not belong to user story");
         }
+        userStoryService.checkUserStoryStatus(userStoryId);
         return testCaseRepository.save(testCasePayload.toEntity(existingTestCase, userStory));
     }
 
