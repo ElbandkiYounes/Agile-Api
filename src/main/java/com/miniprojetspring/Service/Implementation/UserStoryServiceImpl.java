@@ -32,7 +32,7 @@ public class UserStoryServiceImpl implements UserStoryService {
     }
 
     public UserStory createUserStory(UserStoryPayload userStoryPayload) {
-        ProductBacklog productBacklog = productBacklogServiceImpl.getProductBacklogById(UUID.fromString(userStoryPayload.getProductBacklogId()));
+        ProductBacklog productBacklog = productBacklogServiceImpl.getProductBacklogById(userStoryPayload.getProductBacklogId());
         if (productBacklog == null) {
             throw new NotFoundException("Product backlog not found");
         }
@@ -52,7 +52,7 @@ public class UserStoryServiceImpl implements UserStoryService {
 
     public UserStory linkUserStoryToEpic(UUID epicId,UUID userStoryId) {
         UserStory userStory = getUserStoryById(userStoryId);
-        Epic epic= epicService.getEpicById(epicId);
+        Epic epic= epicService.getEpicById(epicId.toString());
         if(epic==null) {
             throw new NotFoundException("Epic not found.");
         }
@@ -73,7 +73,7 @@ public class UserStoryServiceImpl implements UserStoryService {
     public UserStory updateUserStory(UserStoryPayload userStoryPayload,UUID id) {
         UserStory userStory = getUserStoryById(id);
 
-        ProductBacklog productBacklog = productBacklogServiceImpl.getProductBacklogById(UUID.fromString(userStoryPayload.getProductBacklogId()));
+        ProductBacklog productBacklog = productBacklogServiceImpl.getProductBacklogById(userStoryPayload.getProductBacklogId());
         if (productBacklog == null) {
             throw new NotFoundException("Product backlog not found");
         }

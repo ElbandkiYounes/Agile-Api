@@ -1,16 +1,14 @@
 package com.miniprojetspring.Service;
 
 import com.miniprojetspring.Model.Epic;
-import com.miniprojetspring.payload.CreateEpicPayload;
-import com.miniprojetspring.payload.UpdateEpicPayload;
+import com.miniprojetspring.payload.EpicPayload;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface EpicService {
-    Epic createEpic(CreateEpicPayload payload);
-    Epic getEpicById(UUID id);
-    List<Epic> getEpicsByProductBacklogId(UUID productBacklogId);
-    void deleteEpic(UUID id);
-    Epic updateEpic(UUID id, UpdateEpicPayload payload);
+    Epic createEpic(String id,EpicPayload payload);
+    Epic getEpicById(String id);
+    List<Epic> getEpicsByProductBacklogId(String productBacklogId);
+    void deleteEpic(String id);
+    Epic updateEpic(String id, EpicPayload payload);
 }

@@ -6,8 +6,7 @@ import com.miniprojetspring.Model.Project;
 import com.miniprojetspring.Repository.ProductBacklogRepository;
 import com.miniprojetspring.Service.Implementation.ProductBacklogServiceImpl;
 import com.miniprojetspring.Service.Implementation.ProjectServiceImpl;
-import com.miniprojetspring.payload.CreateProductBacklogPayload;
-import com.miniprojetspring.payload.UpdateProductBacklogPayload;
+import com.miniprojetspring.payload.ProductBacklogPayload;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,8 +32,8 @@ public class ProductBacklogServiceImplTest {
     @InjectMocks
     private ProductBacklogServiceImpl productBacklogServiceImpl;
 
-    private CreateProductBacklogPayload createPayload;
-    private UpdateProductBacklogPayload updatePayload;
+    private ProductBacklogPayload createPayload;
+    private ProductBacklogPayload updatePayload;
     private Project project;
     private ProductBacklog productBacklog;
     private UUID productBacklogId;
@@ -45,11 +44,11 @@ public class ProductBacklogServiceImplTest {
         projectId = UUID.randomUUID();
         productBacklogId = UUID.randomUUID();
 
-        createPayload = new CreateProductBacklogPayload();
+        createPayload = new ProductBacklogPayload();
         createPayload.setName("Test Backlog");
         createPayload.setProjectId(projectId.toString());
 
-        updatePayload = new UpdateProductBacklogPayload();
+        updatePayload = new ProductBacklogPayload();
         updatePayload.setName("Updated Backlog");
 
         project = new Project();
@@ -64,26 +63,26 @@ public class ProductBacklogServiceImplTest {
 
     @Test
     public void testCreateProductBacklog_Success() {
-        when(projectServiceImpl.getProjectById(projectId)).thenReturn(project);
+        when(projectServiceImpl.getProjectById(String.valueOf(projectId))).thenReturn(project);
         when(productBacklogRepository.save(any(ProductBacklog.class))).thenReturn(productBacklog);
 
-        ProductBacklog actualBacklog = productBacklogServiceImpl.createProductBacklog(createPayload);
+        ProductBacklog actualBacklog = productBacklogServiceImpl.createProductBacklog(projectId.toString(),createPayload);
 
         assertNotNull(actualBacklog);
         assertEquals(productBacklog.getName(), actualBacklog.getName());
         assertEquals(productBacklog.getProject(), actualBacklog.getProject());
 
-        verify(projectServiceImpl, times(1)).getProjectById(projectId);
+        verify(projectServiceImpl, times(1)).getProjectById(String.valueOf(projectId));
         verify(productBacklogRepository, times(1)).save(any(ProductBacklog.class));
     }
 
     @Test
     public void testCreateProductBacklog_ProjectNotFound() {
-        when(projectServiceImpl.getProjectById(projectId)).thenReturn(null);
+        when(projectServiceImpl.getProjectById(String.valueOf(projectId))).thenReturn(null);
 
-        assertThrows(NotFoundException.class, () -> productBacklogServiceImpl.createProductBacklog(createPayload));
+        assertThrows(NotFoundException.class, () -> productBacklogServiceImpl.createProductBacklog(String.valueOf(projectId),createPayload));
 
-        verify(projectServiceImpl, times(1)).getProjectById(projectId);
+        verify(projectServiceImpl, times(1)).getProjectById(String.valueOf(projectId));
         verify(productBacklogRepository, never()).save(any(ProductBacklog.class));
     }
 
@@ -91,7 +90,7 @@ public class ProductBacklogServiceImplTest {
     public void testGetProductBacklogById_Success() {
         when(productBacklogRepository.findById(productBacklogId)).thenReturn(Optional.of(productBacklog));
 
-        ProductBacklog actualBacklog = productBacklogServiceImpl.getProductBacklogById(productBacklogId);
+        ProductBacklog actualBacklog = productBacklogServiceImpl.getProductBacklogById(String.valueOf(productBacklogId));
 
         assertNotNull(actualBacklog);
         assertEquals(productBacklog.getId(), actualBacklog.getId());
@@ -104,7 +103,7 @@ public class ProductBacklogServiceImplTest {
     public void testGetProductBacklogById_NotFound() {
         when(productBacklogRepository.findById(productBacklogId)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> productBacklogServiceImpl.getProductBacklogById(productBacklogId));
+        assertThrows(NotFoundException.class, () -> productBacklogServiceImpl.getProductBacklogById(String.valueOf(productBacklogId)));
 
         verify(productBacklogRepository, times(1)).findById(productBacklogId);
     }
@@ -113,7 +112,7 @@ public class ProductBacklogServiceImplTest {
     public void testDeleteProductBacklog_Success() {
         when(productBacklogRepository.findById(productBacklogId)).thenReturn(Optional.of(productBacklog));
 
-        productBacklogServiceImpl.deleteProductBacklog(productBacklogId);
+        productBacklogServiceImpl.deleteProductBacklog(String.valueOf(productBacklogId));
 
         verify(productBacklogRepository, times(1)).findById(productBacklogId);
         verify(productBacklogRepository, times(1)).deleteById(productBacklogId);
@@ -123,7 +122,7 @@ public class ProductBacklogServiceImplTest {
     public void testDeleteProductBacklog_NotFound() {
         when(productBacklogRepository.findById(productBacklogId)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> productBacklogServiceImpl.deleteProductBacklog(productBacklogId));
+        assertThrows(NotFoundException.class, () -> productBacklogServiceImpl.deleteProductBacklog(String.valueOf(productBacklogId)));
 
         verify(productBacklogRepository, times(1)).findById(productBacklogId);
         verify(productBacklogRepository, never()).deleteById(productBacklogId);
@@ -134,7 +133,7 @@ public class ProductBacklogServiceImplTest {
         when(productBacklogRepository.findById(productBacklogId)).thenReturn(Optional.of(productBacklog));
         when(productBacklogRepository.save(any(ProductBacklog.class))).thenReturn(productBacklog);
 
-        ProductBacklog actualBacklog = productBacklogServiceImpl.updateProductBacklog(productBacklogId, updatePayload);
+        ProductBacklog actualBacklog = productBacklogServiceImpl.updateProductBacklog(String.valueOf(productBacklogId), updatePayload);
 
         assertNotNull(actualBacklog);
         assertEquals(updatePayload.getName(), actualBacklog.getName());
@@ -147,7 +146,7 @@ public class ProductBacklogServiceImplTest {
     public void testUpdateProductBacklog_NotFound() {
         when(productBacklogRepository.findById(productBacklogId)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> productBacklogServiceImpl.updateProductBacklog(productBacklogId, updatePayload));
+        assertThrows(NotFoundException.class, () -> productBacklogServiceImpl.updateProductBacklog(String.valueOf(productBacklogId), updatePayload));
 
         verify(productBacklogRepository, times(1)).findById(productBacklogId);
         verify(productBacklogRepository, never()).save(any(ProductBacklog.class));

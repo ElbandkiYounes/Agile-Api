@@ -1,14 +1,11 @@
 package com.miniprojetspring.Service;
 
 import com.miniprojetspring.Model.ProductBacklog;
-import com.miniprojetspring.payload.CreateProductBacklogPayload;
-import com.miniprojetspring.payload.UpdateProductBacklogPayload;
-
-import java.util.UUID;
+import com.miniprojetspring.payload.ProductBacklogPayload;
 
 public interface ProductBacklogService {
-    ProductBacklog createProductBacklog(CreateProductBacklogPayload payload);
-    ProductBacklog getProductBacklogById(UUID id);
-    void deleteProductBacklog(UUID id);
-    ProductBacklog updateProductBacklog(UUID id, UpdateProductBacklogPayload payload);
+    ProductBacklog createProductBacklog(String id, ProductBacklogPayload payload);
+    ProductBacklog getProductBacklogById(String id);
+    void deleteProductBacklog(String id);
+    ProductBacklog updateProductBacklog(String id, ProductBacklogPayload payload);
 }

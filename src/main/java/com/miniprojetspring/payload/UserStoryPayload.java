@@ -1,7 +1,6 @@
 package com.miniprojetspring.payload;
 
-import com.miniprojetspring.Model.UserStoryPriority;
-import com.miniprojetspring.Model.UserStoryStatus;
+import com.miniprojetspring.Model.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -34,4 +33,28 @@ public class UserStoryPayload {
 
     @NotNull(message = "Status is required")
     private UserStoryStatus userStoryStatus;
+
+    public UserStory toEntity(ProductBacklog productBacklog,Role role) {
+        return UserStory.builder()
+                .title(title)
+                .description(description)
+                .role(role)
+                .goal(goal)
+                .desire(desire)
+                .priority(userStoryPriority)
+                .status(userStoryStatus)
+                .productBacklog(productBacklog)
+                .build();
+    }
+
+    public UserStory toEntity(UserStory userStory,Role role) {
+        userStory.setTitle(this.getTitle());
+        userStory.setDescription(this.getDescription());
+        userStory.setRole(role);
+        userStory.setGoal(this.getGoal());
+        userStory.setDesire(this.getDesire());
+        userStory.setPriority(this.getUserStoryPriority());
+        userStory.setStatus(this.getUserStoryStatus());
+        return userStory;
+    }
 }

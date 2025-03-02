@@ -17,7 +17,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.projectRepository = projectRepository;
     }
 
-    public Project getProjectById(UUID uuid) {
-        return projectRepository.findById(uuid).orElseThrow(() -> new NotFoundException("Project not found"));
+    public Project getProjectById(String uuid) {
+        return projectRepository.findById(UUID.fromString(uuid)).orElseThrow(() -> new NotFoundException("Project not found"));
     }
 }
