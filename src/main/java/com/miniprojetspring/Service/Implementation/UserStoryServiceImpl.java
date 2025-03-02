@@ -1,10 +1,8 @@
 package com.miniprojetspring.Service.Implementation;
 
 import com.miniprojetspring.Exception.NotFoundException;
-import com.miniprojetspring.Model.Epic;
-import com.miniprojetspring.Model.ProductBacklog;
-import com.miniprojetspring.Model.Role;
-import com.miniprojetspring.Model.UserStory;
+import com.miniprojetspring.Model.*;
+import com.miniprojetspring.Repository.TestCaseRepository;
 import com.miniprojetspring.Repository.UserStoryRepository;
 import com.miniprojetspring.Service.EpicService;
 import com.miniprojetspring.Service.ProductBacklogService;
@@ -24,17 +22,19 @@ public class UserStoryServiceImpl implements UserStoryService {
     private final ProductBacklogService productBacklogServiceImpl;
     private final EpicService epicService;
     private final RoleService roleService;
+    private final TestCaseRepository testCaseRepository;
 
     @Autowired
     public UserStoryServiceImpl(
             UserStoryRepository userStoryRepository,
             ProductBacklogService productBacklogServiceImpl,
             EpicService epicService,
-            RoleService roleService) {
+            RoleService roleService, com.miniprojetspring.Repository.TestCaseRepository testCaseRepository) {
         this.userStoryRepository = userStoryRepository;
         this.productBacklogServiceImpl = productBacklogServiceImpl;
         this.epicService = epicService;
         this.roleService = roleService;
+        this.testCaseRepository = testCaseRepository;
     }
 
     public List<UserStory> getUserStoriesByRoleId(String roleId) {
@@ -122,5 +122,19 @@ public class UserStoryServiceImpl implements UserStoryService {
     public void deleteUserStory(String id) {
         UserStory userStory = getUserStoryById(id);
         userStoryRepository.delete(userStory);
+    }
+
+    @Override
+    public void checkUserStoryStatus(String id) {
+        UserStory userStory= getUserStoryById(id);
+        List<TestCase> testCases = testCaseRepository.findTestCasesByUserStoryId(UUID.fromString(id));
+        boolean allTestCasePassed = testCases.stream().allMatch(testCase -> testCase.getResult().equals(TestCaseResult.PASS));
+         if(allTestCasePassed){
+                userStory.setStatus(UserStoryStatus.DONE);
+         }
+         else {
+             userStory.setStatus(UserStoryStatus.IN_PROGRESS);
+         }
+         userStoryRepository.save(userStory);
     }
 }
