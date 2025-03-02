@@ -15,5 +15,5 @@ public interface UserStoryService {
     UserStory getUserStoryById(String id);
     UserStory updateUserStory(UserStoryPayload userStoryPayload, String id);
     void deleteUserStory(String id);
-    public void checkUserStoryStatus(String id);
+    void checkUserStoryStatus(String id);
 }
