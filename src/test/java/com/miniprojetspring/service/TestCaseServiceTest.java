@@ -47,7 +47,6 @@ public class TestCaseServiceTest {
         testCasePayload = new TestCasePayload();
         testCasePayload.setTitle("Test Case Title");
         testCasePayload.setDescription("Test Case Description");
-        testCasePayload.setUserStoryId(userStoryId.toString());
 
         userStory = UserStory.builder()
                 .id(userStoryId)

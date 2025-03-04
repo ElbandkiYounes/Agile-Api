@@ -52,7 +52,7 @@ public class TestCaseServiceImpl implements TestCaseService {
             throw new NotFoundException("Test case does not belong to user story");
         }
         userStoryService.checkUserStoryStatus(userStoryId);
-        return testCaseRepository.save(testCasePayload.toEntity(existingTestCase, userStory));
+        return testCaseRepository.save(testCasePayload.toEntity(existingTestCase));
     }
 
     @Override

@@ -21,9 +21,6 @@ public class TestCasePayload {
     @NotNull(message = "Test case result is required")
     private TestCaseResult result;
 
-    @NotNull(message = "UserStory ID is required")
-    private String userStoryId;
-
     public TestCase toEntity(UserStory userStory) {
         return TestCase.builder()
                 .title(title)
@@ -33,11 +30,10 @@ public class TestCasePayload {
                 .build();
     }
 
-    public TestCase toEntity(TestCase testCase, UserStory userStory) {
+    public TestCase toEntity(TestCase testCase) {
         testCase.setTitle(this.title);
         testCase.setDescription(this.description);
         testCase.setResult(this.result);
-        testCase.setUserStory(userStory);
         return testCase;
     }
 }
