@@ -2,10 +2,7 @@ package com.miniprojetspring.service;
 
 import com.miniprojetspring.Exception.BadRequestException;
 import com.miniprojetspring.Exception.NotFoundException;
-import com.miniprojetspring.Model.Epic;
-import com.miniprojetspring.Model.ProductBacklog;
-import com.miniprojetspring.Model.Project;
-import com.miniprojetspring.Model.SprintBacklog;
+import com.miniprojetspring.Model.*;
 import com.miniprojetspring.Repository.EpicRepository;
 import com.miniprojetspring.Service.Implementation.EpicServiceImpl;
 import com.miniprojetspring.Service.Implementation.ProductBacklogServiceImpl;
@@ -206,6 +203,9 @@ public class EpicServiceTest {
         when(epicRepository.findById(epicId)).thenReturn(Optional.of(epic));
         when(sprintBacklogServiceImpl.getSprintBacklogById(sprintBacklogId.toString())).thenReturn(sprintBacklog);
         when(epicRepository.save(any(Epic.class))).thenReturn(epic);
+
+        // Ensure the epic has at least one user story
+        epic.setUserStory(List.of(new UserStory()));
 
         Epic linkedEpic = epicService.linkEpicToSprintBacklog(sprintBacklogId.toString(), epicId.toString());
 
