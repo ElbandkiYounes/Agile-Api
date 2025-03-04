@@ -25,6 +25,8 @@ public class Project {
     @OneToOne
     private ProductBacklog productBacklog;
     @OneToMany
+    private List<SprintBacklog> sprintBacklogs;
+    @OneToMany
     @Builder.Default
     private List<Role> roles = Collections.emptyList();
     @CreatedDate
