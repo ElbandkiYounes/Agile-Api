@@ -1,5 +1,6 @@
 package com.miniprojetspring.Service.Implementation;
 
+import com.miniprojetspring.Exception.BadRequestException;
 import com.miniprojetspring.Exception.NotFoundException;
 import com.miniprojetspring.Model.Epic;
 import com.miniprojetspring.Model.ProductBacklog;
@@ -68,6 +69,9 @@ public class EpicServiceImpl implements EpicService {
         }
         if (sprintBacklog.getProject().getId() != epic.getProductBacklog().getProject().getId()) {
             throw new NotFoundException("Sprint Backlog and Epic not on the same Project");
+        }
+        if (epic.getUserStory().isEmpty()){
+            throw new BadRequestException("Epic must have at least one User Story to be linked to a Sprint Backlog");
         }
         epic.setSprintBacklog(sprintBacklog);
         return epicRepository.save(epic);

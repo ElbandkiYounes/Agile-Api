@@ -1,7 +1,5 @@
 package com.miniprojetspring.Model;
 
 public enum UserStoryPriority {
-    HIGH,
-    MEDIUM,
-    LOW
+    MUST_HAVE, SHOULD_HAVE, COULD_HAVE, WONT_HAVE
 }
