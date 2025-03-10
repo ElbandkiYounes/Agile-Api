@@ -1,6 +1,7 @@
 package com.miniprojetspring.service;
 
 import com.miniprojetspring.Exception.BadRequestException;
+import com.miniprojetspring.Exception.ConflictException;
 import com.miniprojetspring.Exception.NotFoundException;
 import com.miniprojetspring.Model.*;
 import com.miniprojetspring.Repository.EpicRepository;
@@ -223,6 +224,21 @@ public class EpicServiceTest {
         when(sprintBacklogServiceImpl.getSprintBacklogById(sprintBacklogId.toString())).thenReturn(null);
 
         assertThrows(NotFoundException.class, () -> epicService.linkEpicToSprintBacklog(sprintBacklogId.toString(), epicId.toString()));
+
+        verify(epicRepository, times(1)).findById(epicId);
+        verify(sprintBacklogServiceImpl, times(1)).getSprintBacklogById(sprintBacklogId.toString());
+        verify(epicRepository, never()).save(any(Epic.class));
+    }
+
+    @Test
+    public void testLinkEpicToSprintBacklog_Conflict() {
+        when(epicRepository.findById(epicId)).thenReturn(Optional.of(epic));
+        when(sprintBacklogServiceImpl.getSprintBacklogById(sprintBacklogId.toString())).thenReturn(sprintBacklog);
+
+        // Ensure the epic is already linked to a sprint backlog
+        epic.setSprintBacklog(sprintBacklog);
+
+        assertThrows(ConflictException.class, () -> epicService.linkEpicToSprintBacklog(sprintBacklogId.toString(), epicId.toString()));
 
         verify(epicRepository, times(1)).findById(epicId);
         verify(sprintBacklogServiceImpl, times(1)).getSprintBacklogById(sprintBacklogId.toString());
