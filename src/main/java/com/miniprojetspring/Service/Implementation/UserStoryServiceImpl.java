@@ -1,5 +1,6 @@
 package com.miniprojetspring.Service.Implementation;
 
+import com.miniprojetspring.Exception.ConflictException;
 import com.miniprojetspring.Exception.NotFoundException;
 import com.miniprojetspring.Model.*;
 import com.miniprojetspring.Repository.TestCaseRepository;
@@ -81,6 +82,11 @@ public class UserStoryServiceImpl implements UserStoryService {
     public UserStory linkUserStoryToEpic(String epicId,String userStoryId) {
         UserStory userStory = getUserStoryById(userStoryId);
         Epic epic= epicService.getEpicById(epicId);
+
+        if(userStory.getEpic() != null) {
+            throw new ConflictException("UserStory already linked to an Epic");
+        }
+
         if(epic==null) {
             throw new NotFoundException("Epic not found.");
         }

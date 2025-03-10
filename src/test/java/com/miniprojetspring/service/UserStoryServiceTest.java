@@ -1,5 +1,6 @@
 package com.miniprojetspring.service;
 
+import com.miniprojetspring.Exception.ConflictException;
 import com.miniprojetspring.Exception.NotFoundException;
 import com.miniprojetspring.Model.*;
 import com.miniprojetspring.Repository.UserStoryRepository;
@@ -240,6 +241,25 @@ public class UserStoryServiceTest {
         when(epicService.getEpicById(epicId.toString())).thenReturn(null);
 
         assertThrows(NotFoundException.class, () -> userStoryServiceImpl.linkUserStoryToEpic(epicId.toString(), userStoryId.toString()));
+
+        verify(userStoryRepository, times(1)).findById(userStoryId);
+        verify(epicService, times(1)).getEpicById(epicId.toString());
+        verify(userStoryRepository, never()).save(any(UserStory.class));
+    }
+    @Test
+    public void testLinkUserStoryToEpic_Conflict() {
+        UUID userStoryId = UUID.randomUUID();
+        UUID epicId = UUID.randomUUID();
+        UserStory userStory = new UserStory();
+        userStory.setId(userStoryId);
+        Epic epic = new Epic();
+        epic.setId(epicId);
+        userStory.setEpic(epic);
+
+        when(userStoryRepository.findById(userStoryId)).thenReturn(Optional.of(userStory));
+        when(epicService.getEpicById(epicId.toString())).thenReturn(epic);
+
+        assertThrows(ConflictException.class, () -> userStoryServiceImpl.linkUserStoryToEpic(epicId.toString(), userStoryId.toString()));
 
         verify(userStoryRepository, times(1)).findById(userStoryId);
         verify(epicService, times(1)).getEpicById(epicId.toString());

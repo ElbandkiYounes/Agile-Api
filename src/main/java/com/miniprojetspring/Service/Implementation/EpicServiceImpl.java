@@ -1,6 +1,7 @@
 package com.miniprojetspring.Service.Implementation;
 
 import com.miniprojetspring.Exception.BadRequestException;
+import com.miniprojetspring.Exception.ConflictException;
 import com.miniprojetspring.Exception.NotFoundException;
 import com.miniprojetspring.Model.Epic;
 import com.miniprojetspring.Model.ProductBacklog;
@@ -63,7 +64,9 @@ public class EpicServiceImpl implements EpicService {
     public Epic linkEpicToSprintBacklog(String sprintBacklogId, String epicId) {
         Epic epic = getEpicById(epicId);
         SprintBacklog sprintBacklog = sprintBacklogServiceImpl.getSprintBacklogById(sprintBacklogId);
-
+        if(epic.getSprintBacklog() != null){
+            throw new ConflictException("Epic already linked to a Sprint Backlog");
+        }
         if (sprintBacklog == null) {
             throw new NotFoundException("Sprint Backlog not found.");
         }
