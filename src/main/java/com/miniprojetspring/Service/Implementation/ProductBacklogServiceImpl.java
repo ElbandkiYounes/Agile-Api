@@ -27,7 +27,12 @@ public class ProductBacklogServiceImpl implements ProductBacklogService {
         if (project == null) {
             throw new NotFoundException("Project not found");
         }
-        return productBacklogRepository.save(payload.toEntity(project));
+        if(project.getProductBacklog() != null) {
+            throw new NotFoundException("Product Backlog already exists for this project");
+        }
+        ProductBacklog productBacklog = productBacklogRepository.save(payload.toEntity(project));
+        projectServiceImpl.linkProductBacklogToProject(project.getId(), productBacklog);
+        return productBacklog;
     }
 
     public ProductBacklog getProductBacklogById(String id) {

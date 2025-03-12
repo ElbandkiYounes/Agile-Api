@@ -48,7 +48,7 @@ public class EpicServiceImpl implements EpicService {
         if (productBacklog == null) {
             throw new NotFoundException("Product Backlog not found");
         }
-        return epicRepository.findByProductBacklogId(UUID.fromString(productBacklogId));
+        return epicRepository.findByProductBacklog_Id(UUID.fromString(productBacklogId));
     }
 
     public void deleteEpic(String id) {
@@ -73,7 +73,7 @@ public class EpicServiceImpl implements EpicService {
         if (sprintBacklog.getProject().getId() != epic.getProductBacklog().getProject().getId()) {
             throw new NotFoundException("Sprint Backlog and Epic not on the same Project");
         }
-        if (epic.getUserStory().isEmpty()){
+        if (epic.getUserStories().isEmpty()){
             throw new BadRequestException("Epic must have at least one User Story to be linked to a Sprint Backlog");
         }
         epic.setSprintBacklog(sprintBacklog);

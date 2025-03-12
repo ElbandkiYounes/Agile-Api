@@ -1,5 +1,7 @@
 package com.miniprojetspring.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +25,6 @@ public class TestCase {
     private TestCaseResult result;
 
     @ManyToOne
+    @JsonIgnore
     private UserStory userStory;
-
 }

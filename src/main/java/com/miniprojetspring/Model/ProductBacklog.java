@@ -1,5 +1,7 @@
 package com.miniprojetspring.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,8 +22,19 @@ public class ProductBacklog {
     @Column(nullable = false)
     private String name;
     @OneToOne
+    @JsonIgnore
     private Project project;
     @OneToMany
     @Builder.Default
     private List<Epic> epics = Collections.emptyList();
+    @JsonProperty("projectId")
+    public UUID getProjectId() {
+        return project != null ? project.getId() : null;
+    }
+    @PreRemove
+    private void preRemove() {
+        if (this.project != null) {
+            this.project.setProductBacklog(null);
+        }
+    }
 }

@@ -1,13 +1,17 @@
 package com.miniprojetspring.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -22,13 +26,28 @@ public class Project {
     private UUID id = UUID.randomUUID();
     private String name;
     private String description;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private ProductBacklog productBacklog;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<SprintBacklog> sprintBacklogs;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Role> roles = Collections.emptyList();
-    @CreatedDate
-    private Date CreatedAt;
+    @CreationTimestamp
+    private LocalDateTime CreatedAt;
+
+    @JsonProperty("productBacklogId")
+    public UUID getProductBacklogId() {
+        return productBacklog != null ? productBacklog.getId() : null;
+    }
+
+    @JsonProperty("sprintBacklogIds")
+    public List<UUID> getSprintBacklogIds() {
+        return sprintBacklogs != null ? sprintBacklogs.stream()
+                .map(SprintBacklog::getId)
+                .collect(Collectors.toList()) : Collections.emptyList();
+    }
+
 }

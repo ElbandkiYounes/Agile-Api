@@ -1,9 +1,13 @@
 package com.miniprojetspring.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -34,8 +38,8 @@ public class UserStory {
     @Column(nullable = false)
     private String desire;
 
-    @CreatedDate
-    private Date createdAt;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
     private Date dueDate;
 
     @OneToMany(mappedBy = "userStory", cascade = CascadeType.ALL)
@@ -44,10 +48,21 @@ public class UserStory {
 
     @ManyToOne
     @Builder.Default
+    @JsonIgnore
     private Epic epic = null;
 
     @ManyToOne
+    @JsonIgnore
     private ProductBacklog productBacklog;
 
+    @JsonProperty("productBacklogId")
+    public UUID getProductBacklogId() {
+        return productBacklog != null ? productBacklog.getId() : null;
+    }
+
+    @JsonProperty("epicId")
+    public UUID getEpicId() {
+        return epic != null ? epic.getId() : null;
+    }
 
 }

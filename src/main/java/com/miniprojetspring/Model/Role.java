@@ -1,5 +1,7 @@
 package com.miniprojetspring.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +24,12 @@ public class Role {
     private String description;
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
+    @JsonIgnore
     private Project project;
+
+    @JsonProperty("projectId")
+    public UUID getProjectId() {
+        return project.getId();
+    }
 
 }

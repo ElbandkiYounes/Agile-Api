@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Collections;
+
 @Getter
 @Setter
 @Builder
@@ -19,6 +21,7 @@ public class ProjectPayload {
         return Project.builder()
                 .name(name)
                 .description(description)
+                .sprintBacklogs(Collections.emptyList())
                 .build();
     }
 

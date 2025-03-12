@@ -43,7 +43,7 @@ public class UserStoryServiceImpl implements UserStoryService {
         if(role==null) {
             throw new NotFoundException("Role not found.");
         }
-        return userStoryRepository.findByRoleId(UUID.fromString(roleId));
+        return userStoryRepository.findByRole_Id(UUID.fromString(roleId));
     }
 
     public List<UserStory> getUserStoriesByEpicId(String EpicId) {
@@ -51,7 +51,7 @@ public class UserStoryServiceImpl implements UserStoryService {
         if(epic==null) {
             throw new NotFoundException("Epic not found.");
         }
-        return userStoryRepository.findByEpicId(UUID.fromString(EpicId));
+        return userStoryRepository.findByEpic_Id(UUID.fromString(EpicId));
     }
 
     public List<UserStory> getUserStoriesByBacklogId(String productBacklogId) {
@@ -59,7 +59,7 @@ public class UserStoryServiceImpl implements UserStoryService {
         if(productBacklog==null) {
             throw new NotFoundException("Product backlog not found.");
         }
-        return userStoryRepository.findUserStoriesByProductBacklogId(UUID.fromString(productBacklogId));
+        return userStoryRepository.findUserStoriesByProductBacklog_Id(UUID.fromString(productBacklogId));
     }
 
     public UserStory createUserStory(String productBacklogId, UserStoryPayload userStoryPayload) {

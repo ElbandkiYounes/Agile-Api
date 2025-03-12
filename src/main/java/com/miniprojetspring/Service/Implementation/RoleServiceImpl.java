@@ -27,7 +27,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role getRoleByNameAndProjectId(String name, String projectId) {
-        Optional<Role> role =  roleRepository.findByNameAndProjectId(name, UUID.fromString(projectId));
+        Optional<Role> role =  roleRepository.findByNameAndProject_Id(name, UUID.fromString(projectId));
         return role.orElse(null);
     }
 
@@ -67,7 +67,7 @@ public class RoleServiceImpl implements RoleService {
         if (project == null) {
             throw new NotFoundException("Project not found");
         }
-        return roleRepository.findAllByProjectId(UUID.fromString(projectId));
+        return roleRepository.findAllByProject_Id(UUID.fromString(projectId));
     }
 
     @Override

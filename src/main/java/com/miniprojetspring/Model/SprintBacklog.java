@@ -1,9 +1,8 @@
 package com.miniprojetspring.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Collections;
@@ -19,20 +18,38 @@ import java.util.UUID;
 public class SprintBacklog {
 
     @Id
-    @Builder.Default
-    private UUID id = UUID.randomUUID();
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     private String name;
     private String description ;
 
-    @OneToOne
+    @ManyToOne
+    @JsonIgnore
     private Project project;
 
     @OneToMany
     @Builder.Default
+    @JsonIgnore
     private List<UserStory> userStories = Collections.emptyList();
 
     @OneToMany
     @Builder.Default
+    @JsonIgnore
     private List<Epic> epics =  Collections.emptyList();
+
+    @JsonProperty("projectId")
+    public UUID getProjectId() {
+        return project.getId();
+    }
+
+    @JsonProperty("userStorieIds")
+    public List<UUID> getUserStoriesId() {
+        return userStories.stream().map(UserStory::getId).toList();
+    }
+
+    @JsonProperty("epicIds")
+    public List<UUID> getEpicsId() {
+        return epics.stream().map(Epic::getId).toList();
+    }
 }
