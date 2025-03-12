@@ -107,7 +107,7 @@ public class UserStoryServiceTest {
     @Test
     public void testGetUserStoriesByRoleId_Success() {
         when(roleService.getRoleById(roleId.toString())).thenReturn(role);
-        when(userStoryRepository.findByRoleId(roleId)).thenReturn(List.of(userStory));
+        when(userStoryRepository.findByRole_Id(roleId)).thenReturn(List.of(userStory));
 
         List<UserStory> userStories = userStoryServiceImpl.getUserStoriesByRoleId(roleId.toString());
 
@@ -116,7 +116,7 @@ public class UserStoryServiceTest {
         assertEquals(userStory.getId(), userStories.get(0).getId());
 
         verify(roleService, times(1)).getRoleById(roleId.toString());
-        verify(userStoryRepository, times(1)).findByRoleId(roleId);
+        verify(userStoryRepository, times(1)).findByRole_Id(roleId);
     }
 
     @Test
@@ -126,13 +126,13 @@ public class UserStoryServiceTest {
         assertThrows(NotFoundException.class, () -> userStoryServiceImpl.getUserStoriesByRoleId(roleId.toString()));
 
         verify(roleService, times(1)).getRoleById(roleId.toString());
-        verify(userStoryRepository, never()).findByRoleId(roleId);
+        verify(userStoryRepository, never()).findByRole_Id(roleId);
     }
 
     @Test
     public void testGetUserStoriesByEpicId_Success() {
         when(epicService.getEpicById(epicId.toString())).thenReturn(epic);
-        when(userStoryRepository.findByEpicId(epicId)).thenReturn(List.of(userStory));
+        when(userStoryRepository.findByEpic_Id(epicId)).thenReturn(List.of(userStory));
 
         List<UserStory> userStories = userStoryServiceImpl.getUserStoriesByEpicId(epicId.toString());
 
@@ -141,7 +141,7 @@ public class UserStoryServiceTest {
         assertEquals(userStory.getId(), userStories.get(0).getId());
 
         verify(epicService, times(1)).getEpicById(epicId.toString());
-        verify(userStoryRepository, times(1)).findByEpicId(epicId);
+        verify(userStoryRepository, times(1)).findByEpic_Id(epicId);
     }
 
     @Test
@@ -151,13 +151,13 @@ public class UserStoryServiceTest {
         assertThrows(NotFoundException.class, () -> userStoryServiceImpl.getUserStoriesByEpicId(epicId.toString()));
 
         verify(epicService, times(1)).getEpicById(epicId.toString());
-        verify(userStoryRepository, never()).findByEpicId(epicId);
+        verify(userStoryRepository, never()).findByEpic_Id(epicId);
     }
 
     @Test
     public void testGetUserStoriesByBacklogId_Success() {
         when(productBacklogServiceImpl.getProductBacklogById(productBacklogId.toString())).thenReturn(productBacklog);
-        when(userStoryRepository.findUserStoriesByProductBacklogId(productBacklogId)).thenReturn(List.of(userStory));
+        when(userStoryRepository.findUserStoriesByProductBacklog_Id(productBacklogId)).thenReturn(List.of(userStory));
 
         List<UserStory> userStories = userStoryServiceImpl.getUserStoriesByBacklogId(productBacklogId.toString());
 
@@ -166,7 +166,7 @@ public class UserStoryServiceTest {
         assertEquals(userStory.getId(), userStories.get(0).getId());
 
         verify(productBacklogServiceImpl, times(1)).getProductBacklogById(productBacklogId.toString());
-        verify(userStoryRepository, times(1)).findUserStoriesByProductBacklogId(productBacklogId);
+        verify(userStoryRepository, times(1)).findUserStoriesByProductBacklog_Id(productBacklogId);
     }
 
     @Test
@@ -176,7 +176,7 @@ public class UserStoryServiceTest {
         assertThrows(NotFoundException.class, () -> userStoryServiceImpl.getUserStoriesByBacklogId(productBacklogId.toString()));
 
         verify(productBacklogServiceImpl, times(1)).getProductBacklogById(productBacklogId.toString());
-        verify(userStoryRepository, never()).findUserStoriesByProductBacklogId(productBacklogId);
+        verify(userStoryRepository, never()).findUserStoriesByProductBacklog_Id(productBacklogId);
     }
 
     @Test

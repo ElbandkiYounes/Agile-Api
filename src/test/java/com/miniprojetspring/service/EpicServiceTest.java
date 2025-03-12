@@ -133,7 +133,7 @@ public class EpicServiceTest {
     @Test
     public void testGetEpicsByProductBacklogId_Success() {
         when(productBacklogServiceImpl.getProductBacklogById(String.valueOf(productBacklogId))).thenReturn(productBacklog);
-        when(epicRepository.findByProductBacklogId(productBacklogId)).thenReturn(List.of(epic));
+        when(epicRepository.findByProductBacklog_Id(productBacklogId)).thenReturn(List.of(epic));
 
         List<Epic> epics = epicService.getEpicsByProductBacklogId(productBacklogId.toString());
 
@@ -142,7 +142,7 @@ public class EpicServiceTest {
         assertEquals(epic.getId(), epics.get(0).getId());
 
         verify(productBacklogServiceImpl, times(1)).getProductBacklogById(String.valueOf(productBacklogId));
-        verify(epicRepository, times(1)).findByProductBacklogId(productBacklogId);
+        verify(epicRepository, times(1)).findByProductBacklog_Id(productBacklogId);
     }
 
     @Test
@@ -152,7 +152,7 @@ public class EpicServiceTest {
         assertThrows(NotFoundException.class, () -> epicService.getEpicsByProductBacklogId(productBacklogId.toString()));
 
         verify(productBacklogServiceImpl, times(1)).getProductBacklogById(String.valueOf(productBacklogId));
-        verify(epicRepository, never()).findByProductBacklogId(productBacklogId);
+        verify(epicRepository, never()).findByProductBacklog_Id(productBacklogId);
     }
 
     @Test
@@ -206,7 +206,7 @@ public class EpicServiceTest {
         when(epicRepository.save(any(Epic.class))).thenReturn(epic);
 
         // Ensure the epic has at least one user story
-        epic.setUserStory(List.of(new UserStory()));
+        epic.setUserStories(List.of(new UserStory()));
 
         Epic linkedEpic = epicService.linkEpicToSprintBacklog(sprintBacklogId.toString(), epicId.toString());
 
@@ -289,7 +289,7 @@ public class EpicServiceTest {
         when(sprintBacklogServiceImpl.getSprintBacklogById(sprintBacklogId.toString())).thenReturn(sprintBacklog);
 
         // Ensure the epic has no user stories
-        epic.setUserStory(List.of());
+        epic.setUserStories(List.of());
 
         assertThrows(BadRequestException.class, () -> epicService.linkEpicToSprintBacklog(sprintBacklogId.toString(), epicId.toString()));
 

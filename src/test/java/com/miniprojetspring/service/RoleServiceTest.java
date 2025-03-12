@@ -95,18 +95,18 @@ public class RoleServiceTest {
     @Test
     public void testCreateRole_RoleAlreadyExists() {
         when(projectService.getProjectById(String.valueOf(projectId))).thenReturn(project);
-        when(roleRepository.findByNameAndProjectId(createPayload.getName(), projectId)).thenReturn(Optional.of(role));
+        when(roleRepository.findByNameAndProject_Id(createPayload.getName(), projectId)).thenReturn(Optional.of(role));
 
         assertThrows(ConflictException.class, () -> roleService.createRole(projectId.toString(), createPayload));
 
         verify(projectService, times(1)).getProjectById(String.valueOf(projectId));
-        verify(roleRepository, times(1)).findByNameAndProjectId(createPayload.getName(), projectId);
+        verify(roleRepository, times(1)).findByNameAndProject_Id(createPayload.getName(), projectId);
         verify(roleRepository, never()).save(any(Role.class));
     }
 
     @Test
     public void testGetRoleByNameAndProjectId_Success() {
-        when(roleRepository.findByNameAndProjectId(role.getName(), projectId)).thenReturn(Optional.of(role));
+        when(roleRepository.findByNameAndProject_Id(role.getName(), projectId)).thenReturn(Optional.of(role));
 
         Role actualRole = roleService.getRoleByNameAndProjectId(role.getName(), projectId.toString());
 
@@ -114,18 +114,18 @@ public class RoleServiceTest {
         assertEquals(role.getId(), actualRole.getId());
         assertEquals(role.getName(), actualRole.getName());
 
-        verify(roleRepository, times(1)).findByNameAndProjectId(role.getName(), projectId);
+        verify(roleRepository, times(1)).findByNameAndProject_Id(role.getName(), projectId);
     }
 
     @Test
     public void testGetRoleByNameAndProjectId_NotFound() {
-        when(roleRepository.findByNameAndProjectId(role.getName(), projectId)).thenReturn(Optional.empty());
+        when(roleRepository.findByNameAndProject_Id(role.getName(), projectId)).thenReturn(Optional.empty());
 
         Role actualRole = roleService.getRoleByNameAndProjectId(role.getName(), projectId.toString());
 
         assertNull(actualRole);
 
-        verify(roleRepository, times(1)).findByNameAndProjectId(role.getName(), projectId);
+        verify(roleRepository, times(1)).findByNameAndProject_Id(role.getName(), projectId);
     }
 
     @Test
@@ -162,19 +162,19 @@ public class RoleServiceTest {
                 .description(updatePayload.getDescription())
                 .project(project)
                 .build();
-        when(roleRepository.findByNameAndProjectId(updatePayload.getName(), projectId)).thenReturn(Optional.of(anotherRole));
+        when(roleRepository.findByNameAndProject_Id(updatePayload.getName(), projectId)).thenReturn(Optional.of(anotherRole));
 
         assertThrows(ConflictException.class, () -> roleService.updateRole(projectId.toString(), roleId.toString(), updatePayload));
 
         verify(roleRepository, times(1)).findById(roleId);
-        verify(roleRepository, times(1)).findByNameAndProjectId(updatePayload.getName(), projectId);
+        verify(roleRepository, times(1)).findByNameAndProject_Id(updatePayload.getName(), projectId);
         verify(roleRepository, never()).save(any(Role.class));
     }
 
     @Test
     public void testGetRolesByProjectId_Success() {
         when(projectService.getProjectById(String.valueOf(projectId))).thenReturn(project);
-        when(roleRepository.findAllByProjectId(projectId)).thenReturn(List.of(role));
+        when(roleRepository.findAllByProject_Id(projectId)).thenReturn(List.of(role));
 
         List<Role> roles = roleService.getRolesByProjectId(projectId.toString());
 
@@ -183,7 +183,7 @@ public class RoleServiceTest {
         assertEquals(role.getId(), roles.get(0).getId());
 
         verify(projectService, times(1)).getProjectById(String.valueOf(projectId));
-        verify(roleRepository, times(1)).findAllByProjectId(projectId);
+        verify(roleRepository, times(1)).findAllByProject_Id(projectId);
     }
 
     @Test
@@ -193,7 +193,7 @@ public class RoleServiceTest {
         assertThrows(NotFoundException.class, () -> roleService.getRolesByProjectId(projectId.toString()));
 
         verify(projectService, times(1)).getProjectById(String.valueOf(projectId));
-        verify(roleRepository, never()).findAllByProjectId(projectId);
+        verify(roleRepository, never()).findAllByProject_Id(projectId);
     }
 
     @Test
