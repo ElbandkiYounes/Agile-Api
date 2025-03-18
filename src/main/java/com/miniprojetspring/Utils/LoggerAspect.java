@@ -7,20 +7,34 @@ import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.Arrays;
+import java.io.FileWriter;
+import java.io.IOException;
 
 @Aspect
 @Component
 public class LoggerAspect {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final String LOG_FILE_PATH = "Utils/Logs/logger-aspect-logs.log";
 
-    @Around("execution(* com.miniprojetspring.Controller.*.*(..))")
-    public Object logApiCalls(ProceedingJoinPoint joinPoint) throws Throwable {
-        // Get HTTP request details
+    @Around("execution(* com.miniprojetspring.Service.Implementation.UserStoryServiceImpl.createUserStory(..))")
+    public Object logCreateUserStory(ProceedingJoinPoint joinPoint) throws Throwable {
+        return logOperation(joinPoint, "Create User Story");
+    }
+
+    @Around("execution(* com.miniprojetspring.Service.Implementation.UserStoryServiceImpl.updateUserStory(..))")
+    public Object logUpdateUserStory(ProceedingJoinPoint joinPoint) throws Throwable {
+        return logOperation(joinPoint, "Update User Story");
+    }
+
+    @Around("execution(* com.miniprojetspring.Service.Implementation.UserStoryServiceImpl.deleteUserStory(..))")
+    public Object logDeleteUserStory(ProceedingJoinPoint joinPoint) throws Throwable {
+        return logOperation(joinPoint, "Delete User Story");
+    }
+
+    private Object logOperation(ProceedingJoinPoint joinPoint, String operation) throws Throwable {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
                 .currentRequestAttributes())
                 .getRequest();
@@ -28,25 +42,29 @@ public class LoggerAspect {
         String httpMethod = request.getMethod();
         String requestUrl = request.getRequestURL().toString();
 
-        // Log before method execution
-        logger.info("[{}] {} - Calling: {} with arguments: {}",
-                httpMethod,
-                requestUrl,
-                joinPoint.getSignature().toShortString(),
-                Arrays.toString(joinPoint.getArgs()));
-
         long start = System.currentTimeMillis();
         Object result = joinPoint.proceed();
         long executionTime = System.currentTimeMillis() - start;
 
-        // Log after method execution
-        logger.info("[{}] {} - Completed: {} in {}ms with result: {}",
+        String logMessage = String.format("[%s] %s - %s: %s in %dms with result: %s",
                 httpMethod,
                 requestUrl,
+                operation,
                 joinPoint.getSignature().toShortString(),
                 executionTime,
                 result);
 
+        logger.info(logMessage);
+        writeLogToFile(logMessage);
+
         return result;
+    }
+
+    private void writeLogToFile(String logMessage) {
+        try (FileWriter fileWriter = new FileWriter(LOG_FILE_PATH, true)) {
+            fileWriter.write(logMessage + "\n");
+        } catch (IOException e) {
+            logger.error("Failed to write log to file", e);
+        }
     }
 }
