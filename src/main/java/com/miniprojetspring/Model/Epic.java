@@ -63,4 +63,15 @@ public class Epic {
                 .map(UserStory::getId)
                 .collect(Collectors.toList());
     }
+
+    @PreRemove
+    private void preRemove() {
+        if (sprintBacklog != null) {
+            sprintBacklog.getEpics().remove(this);
+        }
+        if(productBacklog != null) {
+            productBacklog.getEpics().remove(this);
+        }
+
+    }
 }

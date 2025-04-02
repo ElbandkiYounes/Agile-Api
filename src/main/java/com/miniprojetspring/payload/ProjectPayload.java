@@ -1,6 +1,7 @@
 package com.miniprojetspring.payload;
 
 import com.miniprojetspring.Model.Project;
+import com.miniprojetspring.Model.User;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,10 +18,11 @@ public class ProjectPayload {
     @NotBlank(message = "Description is required")
     private String description;
 
-    public Project toEntity() {
+    public Project toEntity(User owner) {
         return Project.builder()
                 .name(name)
                 .description(description)
+                .owner(owner)
                 .sprintBacklogs(Collections.emptyList())
                 .build();
     }

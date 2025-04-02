@@ -15,14 +15,9 @@ public class ProductBacklogPayload {
     @NotNull(message = "name is required (Cannot be null)")
     private String name;
 
-    @NotBlank(message = "projectId is required (Cannot be blank)")
-    @NotNull(message = "projectId is required (Cannot be null)")
-    private String projectId;
-
-    public ProductBacklog toEntity(Project project) {
+    public ProductBacklog toEntity() {
         return ProductBacklog.builder()
                 .name(name)
-                .project(project)
                 .build();
     }
 

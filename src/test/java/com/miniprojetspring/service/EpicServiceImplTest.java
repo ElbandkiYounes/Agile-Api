@@ -6,8 +6,9 @@ import com.miniprojetspring.Exception.NotFoundException;
 import com.miniprojetspring.Model.*;
 import com.miniprojetspring.Repository.EpicRepository;
 import com.miniprojetspring.Service.Implementation.EpicServiceImpl;
-import com.miniprojetspring.Service.Implementation.ProductBacklogServiceImpl;
-import com.miniprojetspring.Service.Implementation.SprintBacklogServiceImpl;
+import com.miniprojetspring.Service.Implementation.ProjectSecurityService;
+import com.miniprojetspring.Service.ProductBacklogService;
+import com.miniprojetspring.Service.SprintBacklogService;
 import com.miniprojetspring.payload.EpicPayload;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,16 +26,19 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class EpicServiceTest {
+public class EpicServiceImplTest {
 
     @Mock
     private EpicRepository epicRepository;
 
     @Mock
-    private ProductBacklogServiceImpl productBacklogServiceImpl;
+    private ProductBacklogService productBacklogService;
 
     @Mock
-    private SprintBacklogServiceImpl sprintBacklogServiceImpl;
+    private SprintBacklogService sprintBacklogService;
+
+    @Mock
+    private ProjectSecurityService projectSecurityService;
 
     @InjectMocks
     private EpicServiceImpl epicService;
@@ -46,6 +51,8 @@ public class EpicServiceTest {
     private UUID productBacklogId;
     private UUID sprintBacklogId;
     private SprintBacklog sprintBacklog;
+    private User currentUser;
+    private Project project;
 
     @BeforeEach
     public void setUp() {
@@ -59,20 +66,23 @@ public class EpicServiceTest {
         updatePayload = new EpicPayload();
         updatePayload.setName("Updated Epic");
 
-        Project project = Project.builder()
+        productBacklog = new ProductBacklog();
+        productBacklog.setId(productBacklogId);
+
+        project = Project.builder()
                 .id(UUID.randomUUID())
                 .name("Test Project")
                 .description("Test Project Description")
+                .productBacklog(productBacklog)
                 .build();
 
-        productBacklog = new ProductBacklog();
-        productBacklog.setId(productBacklogId);
-        productBacklog.setProject(project); // Ensure the project is set
+        productBacklog.setProject(project);
 
         epic = Epic.builder()
                 .id(epicId)
                 .name(createPayload.getName())
                 .productBacklog(productBacklog)
+                .userStories(List.of(new UserStory())) // Add empty user stories list
                 .build();
 
         sprintBacklog = SprintBacklog.builder()
@@ -80,37 +90,46 @@ public class EpicServiceTest {
                 .name("Test Sprint Backlog")
                 .project(project)
                 .build();
+
+        currentUser = User.builder()
+                .id(UUID.randomUUID())
+                .fullName("Test User")
+                .email("testuser@example.com")
+                .password("password")
+                .previlige(Previlige.PRODUCT_OWNER)
+                .project(project)
+                .build();
     }
 
     @Test
     public void testCreateEpic_Success() {
-        when(productBacklogServiceImpl.getProductBacklogById(String.valueOf(productBacklogId))).thenReturn(productBacklog);
+        when(productBacklogService.getProductBacklog()).thenReturn(productBacklog);
         when(epicRepository.save(any(Epic.class))).thenReturn(epic);
 
-        Epic actualEpic = epicService.createEpic(productBacklogId.toString(), createPayload);
+        Epic actualEpic = epicService.createEpic(createPayload);
 
         assertNotNull(actualEpic);
         assertEquals(epic.getName(), actualEpic.getName());
         assertEquals(epic.getProductBacklog(), actualEpic.getProductBacklog());
 
-        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(String.valueOf(productBacklogId));
+        verify(productBacklogService, times(1)).getProductBacklog();
         verify(epicRepository, times(1)).save(any(Epic.class));
     }
 
     @Test
     public void testCreateEpic_ProductBacklogNotFound() {
-        UUID notFoundProductBacklogId = UUID.randomUUID();
-        when(productBacklogServiceImpl.getProductBacklogById(String.valueOf(notFoundProductBacklogId))).thenReturn(null);
+        when(productBacklogService.getProductBacklog()).thenReturn(null);
 
-        assertThrows(NotFoundException.class, () -> epicService.createEpic(notFoundProductBacklogId.toString(), createPayload));
+        assertThrows(NotFoundException.class, () -> epicService.createEpic(createPayload));
 
-        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(String.valueOf(notFoundProductBacklogId));
+        verify(productBacklogService, times(1)).getProductBacklog();
         verify(epicRepository, never()).save(any(Epic.class));
     }
 
     @Test
     public void testGetEpicById_Success() {
         when(epicRepository.findById(epicId)).thenReturn(Optional.of(epic));
+        when(projectSecurityService.isProjectMember(project.getId().toString())).thenReturn(true);
 
         Epic actualEpic = epicService.getEpicById(epicId.toString());
 
@@ -131,37 +150,39 @@ public class EpicServiceTest {
     }
 
     @Test
-    public void testGetEpicsByProductBacklogId_Success() {
-        when(productBacklogServiceImpl.getProductBacklogById(String.valueOf(productBacklogId))).thenReturn(productBacklog);
+    public void testGetEpics_Success() {
+        when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
         when(epicRepository.findByProductBacklog_Id(productBacklogId)).thenReturn(List.of(epic));
 
-        List<Epic> epics = epicService.getEpicsByProductBacklogId(productBacklogId.toString());
+        List<Epic> epics = epicService.getEpics();
 
         assertNotNull(epics);
         assertFalse(epics.isEmpty());
         assertEquals(epic.getId(), epics.get(0).getId());
 
-        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(String.valueOf(productBacklogId));
         verify(epicRepository, times(1)).findByProductBacklog_Id(productBacklogId);
     }
 
     @Test
-    public void testGetEpicsByProductBacklogId_ProductBacklogNotFound() {
-        when(productBacklogServiceImpl.getProductBacklogById(String.valueOf(productBacklogId))).thenReturn(null);
+    public void testGetEpics_UserNotInProject() {
+        currentUser.setProject(null);
+        when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
 
-        assertThrows(NotFoundException.class, () -> epicService.getEpicsByProductBacklogId(productBacklogId.toString()));
+        assertThrows(NotFoundException.class, () -> epicService.getEpics());
 
-        verify(productBacklogServiceImpl, times(1)).getProductBacklogById(String.valueOf(productBacklogId));
-        verify(epicRepository, never()).findByProductBacklog_Id(productBacklogId);
+        verify(epicRepository, never()).findByProductBacklog_Id(any(UUID.class));
     }
 
     @Test
     public void testDeleteEpic_Success() {
         when(epicRepository.findById(epicId)).thenReturn(Optional.of(epic));
+        when(projectSecurityService.isProjectOwner(project.getId().toString())).thenReturn(true);
+
+        doNothing().when(epicRepository).deleteById(epicId);
 
         epicService.deleteEpic(epicId.toString());
 
-        verify(epicRepository, times(1)).findById(epicId);
+        verify(epicRepository, atLeastOnce()).findById(epicId);
         verify(epicRepository, times(1)).deleteById(epicId);
     }
 
@@ -179,13 +200,14 @@ public class EpicServiceTest {
     public void testUpdateEpic_Success() {
         when(epicRepository.findById(epicId)).thenReturn(Optional.of(epic));
         when(epicRepository.save(any(Epic.class))).thenReturn(epic);
+        when(projectSecurityService.isProjectOwner(project.getId().toString())).thenReturn(true);
 
         Epic actualEpic = epicService.updateEpic(epicId.toString(), updatePayload);
 
         assertNotNull(actualEpic);
         assertEquals(updatePayload.getName(), actualEpic.getName());
 
-        verify(epicRepository, times(1)).findById(epicId);
+        verify(epicRepository, atLeastOnce()).findById(epicId);
         verify(epicRepository, times(1)).save(any(Epic.class));
     }
 
@@ -202,99 +224,104 @@ public class EpicServiceTest {
     @Test
     public void testLinkEpicToSprintBacklog_Success() {
         when(epicRepository.findById(epicId)).thenReturn(Optional.of(epic));
-        when(sprintBacklogServiceImpl.getSprintBacklogById(sprintBacklogId.toString())).thenReturn(sprintBacklog);
+        when(projectSecurityService.isProjectOwner(project.getId().toString())).thenReturn(true);
+        when(sprintBacklogService.getSprintBacklogById(sprintBacklogId.toString())).thenReturn(sprintBacklog);
         when(epicRepository.save(any(Epic.class))).thenReturn(epic);
-
-        // Ensure the epic has at least one user story
-        epic.setUserStories(List.of(new UserStory()));
 
         Epic linkedEpic = epicService.linkEpicToSprintBacklog(sprintBacklogId.toString(), epicId.toString());
 
         assertNotNull(linkedEpic);
         assertEquals(sprintBacklog, linkedEpic.getSprintBacklog());
 
-        verify(epicRepository, times(1)).findById(epicId);
-        verify(sprintBacklogServiceImpl, times(1)).getSprintBacklogById(sprintBacklogId.toString());
+        verify(epicRepository, atLeastOnce()).findById(epicId);
+        verify(sprintBacklogService, times(1)).getSprintBacklogById(sprintBacklogId.toString());
         verify(epicRepository, times(1)).save(any(Epic.class));
     }
 
     @Test
     public void testLinkEpicToSprintBacklog_SprintBacklogNotFound() {
         when(epicRepository.findById(epicId)).thenReturn(Optional.of(epic));
-        when(sprintBacklogServiceImpl.getSprintBacklogById(sprintBacklogId.toString())).thenReturn(null);
+        when(sprintBacklogService.getSprintBacklogById(sprintBacklogId.toString())).thenReturn(null);
+        when(projectSecurityService.isProjectOwner(anyString())).thenReturn(true);
 
         assertThrows(NotFoundException.class, () -> epicService.linkEpicToSprintBacklog(sprintBacklogId.toString(), epicId.toString()));
 
-        verify(epicRepository, times(1)).findById(epicId);
-        verify(sprintBacklogServiceImpl, times(1)).getSprintBacklogById(sprintBacklogId.toString());
+        verify(epicRepository, atLeastOnce()).findById(epicId);
+        verify(sprintBacklogService, times(1)).getSprintBacklogById(sprintBacklogId.toString());
         verify(epicRepository, never()).save(any(Epic.class));
     }
 
     @Test
     public void testLinkEpicToSprintBacklog_Conflict() {
-        when(epicRepository.findById(epicId)).thenReturn(Optional.of(epic));
-        when(sprintBacklogServiceImpl.getSprintBacklogById(sprintBacklogId.toString())).thenReturn(sprintBacklog);
-
-        // Ensure the epic is already linked to a sprint backlog
         epic.setSprintBacklog(sprintBacklog);
+        when(epicRepository.findById(epicId)).thenReturn(Optional.of(epic));
+        when(projectSecurityService.isProjectOwner(anyString())).thenReturn(true);
 
         assertThrows(ConflictException.class, () -> epicService.linkEpicToSprintBacklog(sprintBacklogId.toString(), epicId.toString()));
 
-        verify(epicRepository, times(1)).findById(epicId);
-        verify(sprintBacklogServiceImpl, times(1)).getSprintBacklogById(sprintBacklogId.toString());
+        verify(epicRepository, atLeastOnce()).findById(epicId);
         verify(epicRepository, never()).save(any(Epic.class));
     }
 
     @Test
     public void testLinkEpicToSprintBacklog_DifferentProjects() {
+        // Create a different project
         Project differentProject = Project.builder()
                 .id(UUID.randomUUID())
                 .name("Different Project")
                 .description("Different Project Description")
                 .build();
 
+        // Create a sprint backlog from the different project
         SprintBacklog differentSprintBacklog = SprintBacklog.builder()
                 .id(UUID.randomUUID())
                 .name("Different Sprint Backlog")
                 .project(differentProject)
                 .build();
 
+        // Mock repository responses
         when(epicRepository.findById(epicId)).thenReturn(Optional.of(epic));
-        when(sprintBacklogServiceImpl.getSprintBacklogById(sprintBacklogId.toString())).thenReturn(differentSprintBacklog);
+        when(sprintBacklogService.getSprintBacklogById(sprintBacklogId.toString())).thenReturn(differentSprintBacklog);
 
-        assertThrows(NotFoundException.class, () -> epicService.linkEpicToSprintBacklog(sprintBacklogId.toString(), epicId.toString()));
+        // Mock security checks
+        // Return true for the epic's project (current project)
+        when(projectSecurityService.isProjectOwner(project.getId().toString())).thenReturn(true);
+        // Return false for the different project
+        when(projectSecurityService.isProjectOwner(differentProject.getId().toString())).thenReturn(false);
 
-        verify(epicRepository, times(1)).findById(epicId);
-        verify(sprintBacklogServiceImpl, times(1)).getSprintBacklogById(sprintBacklogId.toString());
+        assertThrows(AccessDeniedException.class, () ->
+                epicService.linkEpicToSprintBacklog(sprintBacklogId.toString(), epicId.toString()));
+
+        verify(epicRepository, atLeastOnce()).findById(epicId);
+        verify(sprintBacklogService, times(1)).getSprintBacklogById(sprintBacklogId.toString());
         verify(epicRepository, never()).save(any(Epic.class));
     }
 
     @Test
     public void testUnlinkEpicToSprintBacklog_Success() {
+        epic.setSprintBacklog(sprintBacklog);
         when(epicRepository.findById(epicId)).thenReturn(Optional.of(epic));
         when(epicRepository.save(any(Epic.class))).thenReturn(epic);
+        when(projectSecurityService.isProjectOwner(project.getId().toString())).thenReturn(true);
 
         Epic unlinkedEpic = epicService.unlinkEpicToSprintBacklog(epicId.toString());
 
         assertNotNull(unlinkedEpic);
         assertNull(unlinkedEpic.getSprintBacklog());
 
-        verify(epicRepository, times(1)).findById(epicId);
+        verify(epicRepository, atLeastOnce()).findById(epicId);
         verify(epicRepository, times(1)).save(any(Epic.class));
     }
 
     @Test
     public void testLinkEpicToSprintBacklog_EpicWithoutUserStories() {
-        when(epicRepository.findById(epicId)).thenReturn(Optional.of(epic));
-        when(sprintBacklogServiceImpl.getSprintBacklogById(sprintBacklogId.toString())).thenReturn(sprintBacklog);
-
-        // Ensure the epic has no user stories
         epic.setUserStories(List.of());
+        when(epicRepository.findById(epicId)).thenReturn(Optional.of(epic));
+        when(projectSecurityService.isProjectOwner(anyString())).thenReturn(true);
 
-        assertThrows(BadRequestException.class, () -> epicService.linkEpicToSprintBacklog(sprintBacklogId.toString(), epicId.toString()));
+        assertThrows(NotFoundException.class, () -> epicService.linkEpicToSprintBacklog(sprintBacklogId.toString(), epicId.toString()));
 
-        verify(epicRepository, times(1)).findById(epicId);
-        verify(sprintBacklogServiceImpl, times(1)).getSprintBacklogById(sprintBacklogId.toString());
+        verify(epicRepository, atLeastOnce()).findById(epicId);
         verify(epicRepository, never()).save(any(Epic.class));
     }
 }

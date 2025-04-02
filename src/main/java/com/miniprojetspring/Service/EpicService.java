@@ -6,9 +6,9 @@ import com.miniprojetspring.payload.EpicPayload;
 import java.util.List;
 
 public interface EpicService {
-    Epic createEpic(String id,EpicPayload payload);
+    Epic createEpic(EpicPayload payload);
     Epic getEpicById(String id);
-    List<Epic> getEpicsByProductBacklogId(String productBacklogId);
+    List<Epic> getEpics();
     void deleteEpic(String id);
     Epic updateEpic(String id, EpicPayload payload);
     Epic linkEpicToSprintBacklog(String sprintBacklogId, String epicId);

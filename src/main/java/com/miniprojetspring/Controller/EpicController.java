@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/epics")
 public class EpicController {
 
     private final EpicService epicService;
@@ -21,31 +21,31 @@ public class EpicController {
         this.epicService = epicService;
     }
 
-    @PostMapping("/product-backlog/{productBacklogId}/epics")
-    public ResponseEntity<Epic> createEpic(@PathVariable String productBacklogId, @Valid @RequestBody EpicPayload payload) {
-        Epic epic = epicService.createEpic(productBacklogId, payload);
+    @PostMapping()
+    public ResponseEntity<Epic> createEpic(@Valid @RequestBody EpicPayload payload) {
+        Epic epic = epicService.createEpic(payload);
         return ResponseEntity.ok(epic);
     }
 
-    @GetMapping("/epics/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Epic> getEpicById(@PathVariable String id) {
         Epic epic = epicService.getEpicById(id);
         return ResponseEntity.ok(epic);
     }
 
-    @GetMapping("/productBacklog/{productBacklogId}/epics")
-    public ResponseEntity<List<Epic>> getEpicsByProductBacklogId(@PathVariable String productBacklogId) {
-        List<Epic> epics = epicService.getEpicsByProductBacklogId(productBacklogId);
+    @GetMapping()
+    public ResponseEntity<List<Epic>> getEpicsByProductBacklogId() {
+        List<Epic> epics = epicService.getEpics();
         return ResponseEntity.ok(epics);
     }
 
-    @DeleteMapping("/epics/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEpic(@PathVariable String id) {
         epicService.deleteEpic(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/epics/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Epic> updateEpic(@PathVariable String id, @Valid @RequestBody EpicPayload payload) {
         Epic epic = epicService.updateEpic(id, payload);
         return ResponseEntity.ok(epic);
