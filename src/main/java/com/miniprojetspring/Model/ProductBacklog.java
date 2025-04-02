@@ -3,6 +3,7 @@ package com.miniprojetspring.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.Fetch;
 import lombok.*;
 
 import java.util.Collections;
@@ -23,13 +24,14 @@ public class ProductBacklog {
     private String name;
     @OneToOne
     @JsonIgnore
+    @JoinColumn(name = "project_id")
     private Project project;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Epic> epics = Collections.emptyList();
     @JsonProperty("projectId")
     public UUID getProjectId() {
-        return project != null ? project.getId() : null;
+        return project.getId();
     }
     @PreRemove
     private void preRemove() {

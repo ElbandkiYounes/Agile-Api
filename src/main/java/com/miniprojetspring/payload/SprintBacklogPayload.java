@@ -16,10 +16,6 @@ public class SprintBacklogPayload {
     @NotBlank(message = "description is required (Cannot be blank)")
     private String description;
 
-    @NotBlank(message = "projectId is required (Cannot be blank)")
-    @NotNull(message = "projectId is required (Cannot be null)")
-    private String projectId;
-
     public SprintBacklog toEntity(Project project) {
         return SprintBacklog.builder()
                 .name(name)

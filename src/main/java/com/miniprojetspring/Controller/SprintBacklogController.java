@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/sprint-backlogs")
 public class SprintBacklogController {
 
     private final SprintBacklogService sprintBacklogService;
@@ -19,25 +19,25 @@ public class SprintBacklogController {
         this.sprintBacklogService = sprintBacklogService;
     }
 
-    @PostMapping("/projects/{projectId}/sprint-backlogs")
-    public ResponseEntity<SprintBacklog> createSprintBacklog(@PathVariable String projectId, @Valid @RequestBody SprintBacklogPayload payload) {
-        SprintBacklog sprintBacklog = sprintBacklogService.createSprintBacklog(projectId, payload);
+    @PostMapping()
+    public ResponseEntity<SprintBacklog> createSprintBacklog(@Valid @RequestBody SprintBacklogPayload payload) {
+        SprintBacklog sprintBacklog = sprintBacklogService.createSprintBacklog(payload);
         return ResponseEntity.ok(sprintBacklog);
     }
 
-    @GetMapping("/sprint-backlogs/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<SprintBacklog> getSprintBacklogById(@PathVariable String id) {
         SprintBacklog sprintBacklog = sprintBacklogService.getSprintBacklogById(id);
         return ResponseEntity.ok(sprintBacklog);
     }
 
-    @PutMapping("/sprint-backlogs/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<SprintBacklog> updateSprintBacklog(@PathVariable String id, @Valid @RequestBody SprintBacklogPayload payload) {
         SprintBacklog sprintBacklog = sprintBacklogService.updateSprintBacklog(id, payload);
         return ResponseEntity.ok(sprintBacklog);
     }
 
-    @DeleteMapping("/sprint-backlogs/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSprintBacklog(@PathVariable String id) {
         sprintBacklogService.deleteSprintBacklog(id);
         return ResponseEntity.noContent().build();

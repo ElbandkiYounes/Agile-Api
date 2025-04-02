@@ -5,12 +5,14 @@ import com.miniprojetspring.Exception.ConflictException;
 import com.miniprojetspring.Exception.NotFoundException;
 import com.miniprojetspring.Model.Epic;
 import com.miniprojetspring.Model.ProductBacklog;
+import com.miniprojetspring.Model.Project;
 import com.miniprojetspring.Model.SprintBacklog;
 import com.miniprojetspring.Repository.EpicRepository;
 import com.miniprojetspring.Service.EpicService;
 import com.miniprojetspring.Service.ProductBacklogService;
 import com.miniprojetspring.Service.SprintBacklogService;
 import com.miniprojetspring.payload.EpicPayload;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,17 +24,19 @@ public class EpicServiceImpl implements EpicService {
     private final EpicRepository epicRepository;
     private final ProductBacklogService productBacklogServiceImpl;
     private final SprintBacklogService sprintBacklogServiceImpl;
+    private final ProjectSecurityService projectSecurityService;
 
     public EpicServiceImpl(EpicRepository epicRepository,
                            ProductBacklogService productBacklogServiceImpl,
-                           SprintBacklogService sprintBacklogServiceImpl) {
+                           SprintBacklogService sprintBacklogServiceImpl, ProjectSecurityService projectSecurityService) {
         this.epicRepository = epicRepository;
         this.productBacklogServiceImpl = productBacklogServiceImpl;
         this.sprintBacklogServiceImpl = sprintBacklogServiceImpl;
+        this.projectSecurityService = projectSecurityService;
     }
 
-    public Epic createEpic(String productBacklogId, EpicPayload payload) {
-        ProductBacklog productBacklog = productBacklogServiceImpl.getProductBacklogById(productBacklogId);
+    public Epic createEpic(EpicPayload payload) {
+        ProductBacklog productBacklog = productBacklogServiceImpl.getProductBacklog();
         if (productBacklog == null) {
             throw new NotFoundException("Product Backlog not found");
         }
@@ -40,24 +44,40 @@ public class EpicServiceImpl implements EpicService {
     }
 
     public Epic getEpicById(String id) {
-        return epicRepository.findById(UUID.fromString(id)).orElseThrow(() -> new NotFoundException("Epic not found"));
+        Epic epic = epicRepository.findById(UUID.fromString(id)).orElseThrow(() -> new NotFoundException("Epic not found"));
+        if (!projectSecurityService.isProjectMember(epic.getProductBacklog().getProject().getId().toString())
+        && !projectSecurityService.isProjectOwner(epic.getProductBacklog().getProject().getId().toString())) {
+            throw new AccessDeniedException("Epic not found");
+        }
+        return epic;
     }
 
-    public List<Epic> getEpicsByProductBacklogId(String productBacklogId) {
-        ProductBacklog productBacklog = productBacklogServiceImpl.getProductBacklogById(productBacklogId);
+    public List<Epic> getEpics() {
+        Project project = projectSecurityService.getCurrentUser().getProject();
+        if (project == null) {
+            throw new NotFoundException("User doesnt belong to a Project");
+        }
+        ProductBacklog productBacklog = project.getProductBacklog();
         if (productBacklog == null) {
             throw new NotFoundException("Product Backlog not found");
         }
-        return epicRepository.findByProductBacklog_Id(UUID.fromString(productBacklogId));
+        return epicRepository.findByProductBacklog_Id(productBacklog.getId());
+
     }
 
     public void deleteEpic(String id) {
         getEpicById(id);
+        if(!projectSecurityService.isProjectOwner(getEpicById(id).getProductBacklog().getProject().getId().toString())){
+            throw new AccessDeniedException("Epic not found");
+        }
         epicRepository.deleteById(UUID.fromString(id));
     }
 
     public Epic updateEpic(String id, EpicPayload payload) {
         Epic epic = getEpicById(id);
+        if(!projectSecurityService.isProjectOwner(epic.getProductBacklog().getProject().getId().toString())){
+            throw new AccessDeniedException("Epic not found");
+        }
         return epicRepository.save(payload.toEntity(epic));
     }
 
@@ -70,8 +90,11 @@ public class EpicServiceImpl implements EpicService {
         if (sprintBacklog == null) {
             throw new NotFoundException("Sprint Backlog not found.");
         }
-        if (sprintBacklog.getProject().getId() != epic.getProductBacklog().getProject().getId()) {
-            throw new NotFoundException("Sprint Backlog and Epic not on the same Project");
+        if (!projectSecurityService.isProjectOwner(sprintBacklog.getProject().getId().toString())){
+            throw new AccessDeniedException("User doesnt have access to this Sprint Backlog");
+        }
+        if(!projectSecurityService.isProjectOwner(epic.getProductBacklog().getProject().getId().toString())){
+            throw new AccessDeniedException("User doesnt have access to this Epic");
         }
         if (epic.getUserStories().isEmpty()){
             throw new BadRequestException("Epic must have at least one User Story to be linked to a Sprint Backlog");
@@ -82,6 +105,9 @@ public class EpicServiceImpl implements EpicService {
 
     public Epic unlinkEpicToSprintBacklog(String epicId) {
         Epic epic = getEpicById(epicId);
+        if(!projectSecurityService.isProjectOwner(epic.getProductBacklog().getProject().getId().toString())){
+            throw new AccessDeniedException("User does not have access to this Epic");
+        }
         epic.setSprintBacklog(null);
         return epicRepository.save(epic);
     }

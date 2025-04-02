@@ -8,8 +8,8 @@ import java.util.List;
 public interface UserStoryService {
     List<UserStory> getUserStoriesByRoleId(String roleId);
     List<UserStory> getUserStoriesByEpicId(String id);
-    List<UserStory> getUserStoriesByBacklogId(String id);
-    UserStory createUserStory(String productBacklogId, UserStoryPayload userStoryPayload);
+    List<UserStory> getUserStories();
+    UserStory createUserStory(UserStoryPayload userStoryPayload);
     UserStory unlinkUserStoryFromEpic(String userStoryId);
     UserStory linkUserStoryToEpic(String epicId, String userStoryId);
     UserStory getUserStoryById(String id);

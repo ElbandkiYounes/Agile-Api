@@ -32,4 +32,9 @@ public class Role {
         return project.getId();
     }
 
+    @PreRemove
+    private void removeRoleFromProject() {
+        project.getRoles().remove(this);
+    }
+
 }
