@@ -23,36 +23,57 @@ import java.util.List;
 public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     public SecurityConfiguration(
             JwtAuthenticationFilter jwtAuthenticationFilter,
-            AuthenticationProvider authenticationProvider
+            AuthenticationProvider authenticationProvider,
+            CustomAccessDeniedHandler accessDeniedHandler,
+            CustomAuthenticationEntryPoint authenticationEntryPoint
     ) {
         this.authenticationProvider = authenticationProvider;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.accessDeniedHandler = accessDeniedHandler;
+        this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Add this line
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
+                        // 1. Public endpoints - no authentication required
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll() // Allow access to Swagger
-                        // Allow GET requests for all authenticated users
-                        .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
-                        // Product owner has full access to all endpoints
-                        .requestMatchers("/api/**").hasAnyAuthority("PRODUCT_OWNER")
-                        // SCRUM_MASTER can invite users
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+
+                        // 2. Role-specific permissions (most specific first)
+                        // SCRUM_MASTER specific permissions
                         .requestMatchers(HttpMethod.POST, "/api/projects/invite").hasAnyAuthority("PRODUCT_OWNER", "SCRUM_MASTER")
-                        // DEVELOPER can edit user stories
+                        
+                        // DEVELOPER specific permissions
                         .requestMatchers(HttpMethod.PUT, "/api/user-stories/**").hasAnyAuthority("PRODUCT_OWNER", "DEVELOPER")
-                        // QUALITY_ASSURANCE can handle test cases
+                        
+                        // QUALITY_ASSURANCE specific permissions for test cases
                         .requestMatchers(HttpMethod.POST, "/api/user-stories/*/test-cases").hasAnyAuthority("PRODUCT_OWNER", "QUALITY_ASSURANCE")
                         .requestMatchers(HttpMethod.PUT, "/api/test-cases/**").hasAnyAuthority("PRODUCT_OWNER", "QUALITY_ASSURANCE")
                         .requestMatchers(HttpMethod.DELETE, "/api/test-cases/**").hasAnyAuthority("PRODUCT_OWNER", "QUALITY_ASSURANCE")
-                        // All other endpoints require detailed authorization at service level
+
+                        // 3. HTTP method-based permissions
+                        // READ operations (GET) accessible to all authenticated users
+                        .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
+                        
+                        // WRITE operations (POST, PUT, DELETE) for Product Owner only
+                        .requestMatchers(HttpMethod.POST, "/api/**").hasAuthority("PRODUCT_OWNER")
+                        .requestMatchers(HttpMethod.PUT, "/api/**").hasAuthority("PRODUCT_OWNER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/**").hasAuthority("PRODUCT_OWNER")
+
+                        // 4. Default: require authentication for any other request
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(exceptions -> exceptions
+                        .accessDeniedHandler(accessDeniedHandler)
+                        .authenticationEntryPoint(authenticationEntryPoint)
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
