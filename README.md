@@ -22,10 +22,10 @@ This application is a comprehensive Spring Boot-based RESTful API for Agile proj
 ## Implemented User Stories
 
 ### Product Backlog Operations
-![Product Backlog Tasks](pngs/backlog%20part1.png)
+![Product Backlog Tasks](pngs/backlog%20part2.png)
 
 ### Sprint, Epic and User Story Management
-![Additional Tasks](pngs/backlog%20part2.png)
+![Additional Tasks](pngs/backlog%20part1.png)
 
 ### Epic Categories
 ![Epic Categories](pngs/epics.png)
