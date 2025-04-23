@@ -593,7 +593,3 @@ The API uses JWT (JSON Web Token) for authentication.
   - Scrum Masters: Can invite users
   - Developers: Can edit user stories
   - Quality Assurance: Can handle test cases
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
