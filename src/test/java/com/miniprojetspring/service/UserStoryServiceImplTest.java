@@ -1,7 +1,7 @@
 package com.miniprojetspring.service;
 
 import com.miniprojetspring.exception.NotFoundException;
-import com.miniprojetspring.Model.*;
+import com.miniprojetspring.model.*;
 import com.miniprojetspring.Repository.TestCaseRepository;
 import com.miniprojetspring.Repository.UserStoryRepository;
 import com.miniprojetspring.Service.EpicService;

@@ -1,4 +1,4 @@
-package com.miniprojetspring.Model;
+package com.miniprojetspring.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -61,7 +61,7 @@ public class Epic {
     public List<UUID> getUserStoryIds() {
         return userStories.stream()
                 .map(UserStory::getId)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @PreRemove

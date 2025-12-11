@@ -1,7 +1,7 @@
 package com.miniprojetspring.payload;
 
-import com.miniprojetspring.Model.Project;
-import com.miniprojetspring.Model.User;
+import com.miniprojetspring.model.Project;
+import com.miniprojetspring.model.User;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;

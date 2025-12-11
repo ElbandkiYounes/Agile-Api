@@ -1,6 +1,6 @@
 package com.miniprojetspring.controller;
 
-import com.miniprojetspring.Model.Epic;
+import com.miniprojetspring.model.Epic;
 import com.miniprojetspring.Service.EpicService;
 import com.miniprojetspring.payload.EpicPayload;
 import jakarta.validation.Valid;

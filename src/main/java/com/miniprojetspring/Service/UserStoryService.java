@@ -1,6 +1,6 @@
 package com.miniprojetspring.Service;
 
-import com.miniprojetspring.Model.UserStory;
+import com.miniprojetspring.model.UserStory;
 import com.miniprojetspring.payload.UserStoryPayload;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.miniprojetspring.controller;
 
-import com.miniprojetspring.Model.UserStory;
+import com.miniprojetspring.model.UserStory;
 import com.miniprojetspring.Service.UserStoryService;
 import com.miniprojetspring.payload.UserStoryPayload;
 import jakarta.validation.Valid;

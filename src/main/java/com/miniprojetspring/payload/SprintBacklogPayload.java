@@ -1,9 +1,8 @@
 package com.miniprojetspring.payload;
 
-import com.miniprojetspring.Model.Project;
-import com.miniprojetspring.Model.SprintBacklog;
+import com.miniprojetspring.model.Project;
+import com.miniprojetspring.model.SprintBacklog;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 

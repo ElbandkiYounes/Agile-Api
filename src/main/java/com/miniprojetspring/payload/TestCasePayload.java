@@ -1,8 +1,8 @@
 package com.miniprojetspring.payload;
 
-import com.miniprojetspring.Model.TestCase;
-import com.miniprojetspring.Model.UserStory;
-import com.miniprojetspring.Model.TestCaseResult;
+import com.miniprojetspring.model.TestCase;
+import com.miniprojetspring.model.UserStory;
+import com.miniprojetspring.model.TestCaseResult;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;

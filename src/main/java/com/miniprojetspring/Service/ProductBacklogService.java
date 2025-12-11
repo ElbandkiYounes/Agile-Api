@@ -1,6 +1,6 @@
 package com.miniprojetspring.Service;
 
-import com.miniprojetspring.Model.ProductBacklog;
+import com.miniprojetspring.model.ProductBacklog;
 import com.miniprojetspring.payload.ProductBacklogPayload;
 
 public interface ProductBacklogService {

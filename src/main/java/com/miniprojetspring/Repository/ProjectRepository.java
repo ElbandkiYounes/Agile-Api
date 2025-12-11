@@ -1,6 +1,6 @@
 package com.miniprojetspring.Repository;
 
-import com.miniprojetspring.Model.Project;
+import com.miniprojetspring.model.Project;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

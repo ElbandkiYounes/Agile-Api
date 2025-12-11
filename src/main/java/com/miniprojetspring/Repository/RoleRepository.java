@@ -1,6 +1,6 @@
 package com.miniprojetspring.Repository;
 
-import com.miniprojetspring.Model.Role;
+import com.miniprojetspring.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.miniprojetspring.Service;
 
-import com.miniprojetspring.Model.Epic;
+import com.miniprojetspring.model.Epic;
 import com.miniprojetspring.payload.EpicPayload;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.miniprojetspring.payload;
 
-import com.miniprojetspring.Model.Previlige;
-import com.miniprojetspring.Model.User;
+import com.miniprojetspring.model.Previlige;
+import com.miniprojetspring.model.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

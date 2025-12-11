@@ -1,8 +1,8 @@
 package com.miniprojetspring.Service.Implementation;
 
 import com.miniprojetspring.exception.NotFoundException;
-import com.miniprojetspring.Model.TestCase;
-import com.miniprojetspring.Model.UserStory;
+import com.miniprojetspring.model.TestCase;
+import com.miniprojetspring.model.UserStory;
 import com.miniprojetspring.Repository.TestCaseRepository;
 import com.miniprojetspring.Service.TestCaseService;
 import com.miniprojetspring.Service.UserStoryService;

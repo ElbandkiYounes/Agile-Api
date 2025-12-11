@@ -1,6 +1,6 @@
 package com.miniprojetspring.Repository;
 
-import com.miniprojetspring.Model.User;
+import com.miniprojetspring.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

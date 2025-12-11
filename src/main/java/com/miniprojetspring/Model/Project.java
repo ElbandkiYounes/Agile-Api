@@ -1,4 +1,4 @@
-package com.miniprojetspring.Model;
+package com.miniprojetspring.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -48,7 +47,7 @@ public class Project {
     private List<Role> roles = new ArrayList<>();
 
     @CreationTimestamp
-    private LocalDateTime CreatedAt;
+    private LocalDateTime createdAt;
 
     @JsonProperty("productBacklogId")
     public UUID getProductBacklogId() {
@@ -59,7 +58,7 @@ public class Project {
     public List<UUID> getSprintBacklogIds() {
         return sprintBacklogs != null ? sprintBacklogs.stream()
                 .map(SprintBacklog::getId)
-                .collect(Collectors.toList()) : Collections.emptyList();
+                .toList() : Collections.emptyList();
     }
 
     @PreRemove

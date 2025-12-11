@@ -1,6 +1,6 @@
 package com.miniprojetspring.controller;
 
-import com.miniprojetspring.Model.User;
+import com.miniprojetspring.model.User;
 import com.miniprojetspring.Service.Implementation.AuthenticationService;
 import com.miniprojetspring.Service.Implementation.JwtService;
 import com.miniprojetspring.Service.Implementation.ProjectSecurityService;

@@ -1,6 +1,6 @@
 package com.miniprojetspring.Service;
 
-import com.miniprojetspring.Model.Role;
+import com.miniprojetspring.model.Role;
 import com.miniprojetspring.payload.RolePayload;
 
 import java.util.List;

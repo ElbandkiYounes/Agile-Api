@@ -1,9 +1,9 @@
 package com.miniprojetspring.payload;
 
-import com.miniprojetspring.Model.Epic;
-import com.miniprojetspring.Model.EpicPriority;
-import com.miniprojetspring.Model.EpicStatus;
-import com.miniprojetspring.Model.ProductBacklog;
+import com.miniprojetspring.model.Epic;
+import com.miniprojetspring.model.EpicPriority;
+import com.miniprojetspring.model.EpicStatus;
+import com.miniprojetspring.model.ProductBacklog;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

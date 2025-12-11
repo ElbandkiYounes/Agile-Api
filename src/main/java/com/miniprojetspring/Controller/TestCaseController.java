@@ -1,6 +1,6 @@
 package com.miniprojetspring.controller;
 
-import com.miniprojetspring.Model.TestCase;
+import com.miniprojetspring.model.TestCase;
 import com.miniprojetspring.Service.TestCaseService;
 import com.miniprojetspring.payload.TestCasePayload;
 import jakarta.validation.Valid;

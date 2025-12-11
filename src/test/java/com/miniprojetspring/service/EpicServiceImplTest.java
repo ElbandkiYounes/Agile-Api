@@ -2,7 +2,7 @@ package com.miniprojetspring.service;
 
 import com.miniprojetspring.exception.ConflictException;
 import com.miniprojetspring.exception.NotFoundException;
-import com.miniprojetspring.Model.*;
+import com.miniprojetspring.model.*;
 import com.miniprojetspring.Repository.EpicRepository;
 import com.miniprojetspring.Service.Implementation.EpicServiceImpl;
 import com.miniprojetspring.Service.Implementation.ProjectSecurityService;
