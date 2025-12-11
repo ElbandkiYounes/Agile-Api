@@ -1,4 +1,4 @@
-package com.miniprojetspring.Service;
+package com.miniprojetspring.service;
 
 import com.miniprojetspring.model.Epic;
 import com.miniprojetspring.payload.EpicPayload;

@@ -1,4 +1,4 @@
-package com.miniprojetspring.Repository;
+package com.miniprojetspring.repository;
 
 import com.miniprojetspring.model.ProductBacklog;
 import org.springframework.data.jpa.repository.JpaRepository;

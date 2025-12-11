@@ -1,6 +1,6 @@
 package com.miniprojetspring.config;
 
-import com.miniprojetspring.Repository.UserRepository;
+import com.miniprojetspring.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

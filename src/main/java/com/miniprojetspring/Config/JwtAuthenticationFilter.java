@@ -1,6 +1,6 @@
 package com.miniprojetspring.config;
 
-import com.miniprojetspring.Service.Implementation.JwtService;
+import com.miniprojetspring.service.implementation.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

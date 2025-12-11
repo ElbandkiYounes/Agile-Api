@@ -1,13 +1,13 @@
-package com.miniprojetspring.Service.Implementation;
+package com.miniprojetspring.service.implementation;
 
 import com.miniprojetspring.exception.ConflictException;
 import com.miniprojetspring.exception.NotFoundException;
 import com.miniprojetspring.model.Project;
 import com.miniprojetspring.model.Role;
-import com.miniprojetspring.Repository.ProjectRepository;
-import com.miniprojetspring.Repository.RoleRepository;
-import com.miniprojetspring.Service.ProjectService;
-import com.miniprojetspring.Service.RoleService;
+import com.miniprojetspring.repository.ProjectRepository;
+import com.miniprojetspring.repository.RoleRepository;
+import com.miniprojetspring.service.ProjectService;
+import com.miniprojetspring.service.RoleService;
 import com.miniprojetspring.payload.RolePayload;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;

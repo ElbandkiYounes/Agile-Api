@@ -1,11 +1,10 @@
-package com.miniprojetspring.Service.Implementation;
+package com.miniprojetspring.service.implementation;
 
 import com.miniprojetspring.exception.ConflictException;
 import com.miniprojetspring.model.User;
-import com.miniprojetspring.Repository.UserRepository;
+import com.miniprojetspring.repository.UserRepository;
 import com.miniprojetspring.payload.LoginUserPayload;
 import com.miniprojetspring.payload.RegisterUserPayload;
-import org.hibernate.validator.internal.constraintvalidators.bv.time.past.PastValidatorForLocalDate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,17 +17,14 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
 
     private final AuthenticationManager authenticationManager;
-    private final PastValidatorForLocalDate pastValidatorForLocalDate;
 
     public AuthenticationService(
             UserRepository userRepository,
             AuthenticationManager authenticationManager,
-            PasswordEncoder passwordEncoder,
-            PastValidatorForLocalDate pastValidatorForLocalDate) {
+            PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.pastValidatorForLocalDate = pastValidatorForLocalDate;
     }
 
     public User signup(RegisterUserPayload payload) {

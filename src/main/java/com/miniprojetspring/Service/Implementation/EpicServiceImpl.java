@@ -1,4 +1,4 @@
-package com.miniprojetspring.Service.Implementation;
+package com.miniprojetspring.service.implementation;
 
 import com.miniprojetspring.exception.BadRequestException;
 import com.miniprojetspring.exception.ConflictException;
@@ -7,10 +7,10 @@ import com.miniprojetspring.model.Epic;
 import com.miniprojetspring.model.ProductBacklog;
 import com.miniprojetspring.model.Project;
 import com.miniprojetspring.model.SprintBacklog;
-import com.miniprojetspring.Repository.EpicRepository;
-import com.miniprojetspring.Service.EpicService;
-import com.miniprojetspring.Service.ProductBacklogService;
-import com.miniprojetspring.Service.SprintBacklogService;
+import com.miniprojetspring.repository.EpicRepository;
+import com.miniprojetspring.service.EpicService;
+import com.miniprojetspring.service.ProductBacklogService;
+import com.miniprojetspring.service.SprintBacklogService;
 import com.miniprojetspring.payload.EpicPayload;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;

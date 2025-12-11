@@ -1,7 +1,7 @@
 package com.miniprojetspring.controller;
 
 import com.miniprojetspring.model.Epic;
-import com.miniprojetspring.Service.EpicService;
+import com.miniprojetspring.service.EpicService;
 import com.miniprojetspring.payload.EpicPayload;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

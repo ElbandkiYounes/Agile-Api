@@ -1,11 +1,11 @@
-package com.miniprojetspring.Service.Implementation;
+package com.miniprojetspring.service.implementation;
 
 import com.miniprojetspring.exception.NotFoundException;
 import com.miniprojetspring.model.SprintBacklog;
 import com.miniprojetspring.model.Project;
-import com.miniprojetspring.Repository.SprintBacklogRepository;
-import com.miniprojetspring.Service.ProjectService;
-import com.miniprojetspring.Service.SprintBacklogService;
+import com.miniprojetspring.repository.SprintBacklogRepository;
+import com.miniprojetspring.service.ProjectService;
+import com.miniprojetspring.service.SprintBacklogService;
 import com.miniprojetspring.payload.SprintBacklogPayload;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;

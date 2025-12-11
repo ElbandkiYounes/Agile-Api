@@ -1,7 +1,7 @@
 package com.miniprojetspring.controller;
 
 import com.miniprojetspring.model.Role;
-import com.miniprojetspring.Service.RoleService;
+import com.miniprojetspring.service.RoleService;
 import com.miniprojetspring.payload.RolePayload;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

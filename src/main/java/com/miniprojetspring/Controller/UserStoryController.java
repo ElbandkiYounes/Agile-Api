@@ -1,7 +1,7 @@
 package com.miniprojetspring.controller;
 
 import com.miniprojetspring.model.UserStory;
-import com.miniprojetspring.Service.UserStoryService;
+import com.miniprojetspring.service.UserStoryService;
 import com.miniprojetspring.payload.UserStoryPayload;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
