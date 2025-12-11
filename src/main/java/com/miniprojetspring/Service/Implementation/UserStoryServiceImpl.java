@@ -1,14 +1,14 @@
-package com.miniprojetspring.Service.Implementation;
+package com.miniprojetspring.service.implementation;
 
 import com.miniprojetspring.exception.ConflictException;
 import com.miniprojetspring.exception.NotFoundException;
 import com.miniprojetspring.model.*;
-import com.miniprojetspring.Repository.TestCaseRepository;
-import com.miniprojetspring.Repository.UserStoryRepository;
-import com.miniprojetspring.Service.EpicService;
-import com.miniprojetspring.Service.ProductBacklogService;
-import com.miniprojetspring.Service.RoleService;
-import com.miniprojetspring.Service.UserStoryService;
+import com.miniprojetspring.repository.TestCaseRepository;
+import com.miniprojetspring.repository.UserStoryRepository;
+import com.miniprojetspring.service.EpicService;
+import com.miniprojetspring.service.ProductBacklogService;
+import com.miniprojetspring.service.RoleService;
+import com.miniprojetspring.service.UserStoryService;
 import com.miniprojetspring.payload.UserStoryPayload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -32,7 +32,7 @@ public class UserStoryServiceImpl implements UserStoryService {
             UserStoryRepository userStoryRepository,
             ProductBacklogService productBacklogServiceImpl,
             EpicService epicService,
-            RoleService roleService, com.miniprojetspring.Repository.TestCaseRepository testCaseRepository, ProjectSecurityService projectSecurityService) {
+            RoleService roleService, com.miniprojetspring.repository.TestCaseRepository testCaseRepository, ProjectSecurityService projectSecurityService) {
         this.userStoryRepository = userStoryRepository;
         this.productBacklogServiceImpl = productBacklogServiceImpl;
         this.epicService = epicService;
@@ -53,8 +53,8 @@ public class UserStoryServiceImpl implements UserStoryService {
         return userStoryRepository.findByRole_Id(UUID.fromString(roleId));
     }
 
-    public List<UserStory> getUserStoriesByEpicId(String EpicId) {
-        Epic epic = epicService.getEpicById(EpicId);
+    public List<UserStory> getUserStoriesByEpicId(String epicId) {
+        Epic epic = epicService.getEpicById(epicId);
         if(epic==null) {
             throw new NotFoundException("Epic not found.");
         }
@@ -62,7 +62,7 @@ public class UserStoryServiceImpl implements UserStoryService {
                 && !projectSecurityService.isProjectOwner(epic.getProductBacklog().getProject().getId().toString())) {
             throw new AccessDeniedException("Epic not found");
         }
-        return userStoryRepository.findByEpic_Id(UUID.fromString(EpicId));
+        return userStoryRepository.findByEpic_Id(UUID.fromString(epicId));
     }
 
     public List<UserStory> getUserStories() {

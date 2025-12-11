@@ -1,4 +1,4 @@
-package com.miniprojetspring.Utils;
+package com.miniprojetspring.utils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -19,17 +19,17 @@ public class LoggerAspect {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String LOG_FILE_PATH = "Utils/Logs/logger-aspect-logs.log";
 
-    @Around("execution(* com.miniprojetspring.Service.Implementation.UserStoryServiceImpl.createUserStory(..))")
+    @Around("execution(* com.miniprojetspring.service.implementation.UserStoryServiceImpl.createUserStory(..))")
     public Object logCreateUserStory(ProceedingJoinPoint joinPoint) throws Throwable {
         return logOperation(joinPoint, "Create User Story");
     }
 
-    @Around("execution(* com.miniprojetspring.Service.Implementation.UserStoryServiceImpl.updateUserStory(..))")
+    @Around("execution(* com.miniprojetspring.service.implementation.UserStoryServiceImpl.updateUserStory(..))")
     public Object logUpdateUserStory(ProceedingJoinPoint joinPoint) throws Throwable {
         return logOperation(joinPoint, "Update User Story");
     }
 
-    @Around("execution(* com.miniprojetspring.Service.Implementation.UserStoryServiceImpl.deleteUserStory(..))")
+    @Around("execution(* com.miniprojetspring.service.implementation.UserStoryServiceImpl.deleteUserStory(..))")
     public Object logDeleteUserStory(ProceedingJoinPoint joinPoint) throws Throwable {
         return logOperation(joinPoint, "Delete User Story");
     }

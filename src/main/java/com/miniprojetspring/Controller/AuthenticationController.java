@@ -1,9 +1,9 @@
 package com.miniprojetspring.controller;
 
 import com.miniprojetspring.model.User;
-import com.miniprojetspring.Service.Implementation.AuthenticationService;
-import com.miniprojetspring.Service.Implementation.JwtService;
-import com.miniprojetspring.Service.Implementation.ProjectSecurityService;
+import com.miniprojetspring.service.implementation.AuthenticationService;
+import com.miniprojetspring.service.implementation.JwtService;
+import com.miniprojetspring.service.implementation.ProjectSecurityService;
 import com.miniprojetspring.payload.LoginResponse;
 import com.miniprojetspring.payload.LoginUserPayload;
 import com.miniprojetspring.payload.RegisterUserPayload;

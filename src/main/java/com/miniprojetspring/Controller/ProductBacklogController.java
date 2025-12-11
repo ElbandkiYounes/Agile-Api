@@ -1,7 +1,7 @@
 package com.miniprojetspring.controller;
 
 import com.miniprojetspring.model.ProductBacklog;
-import com.miniprojetspring.Service.ProductBacklogService;
+import com.miniprojetspring.service.ProductBacklogService;
 import com.miniprojetspring.payload.ProductBacklogPayload;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

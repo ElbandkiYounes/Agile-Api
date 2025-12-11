@@ -1,11 +1,11 @@
-package com.miniprojetspring.Service.Implementation;
+package com.miniprojetspring.service.implementation;
 
 import com.miniprojetspring.exception.NotFoundException;
 import com.miniprojetspring.model.TestCase;
 import com.miniprojetspring.model.UserStory;
-import com.miniprojetspring.Repository.TestCaseRepository;
-import com.miniprojetspring.Service.TestCaseService;
-import com.miniprojetspring.Service.UserStoryService;
+import com.miniprojetspring.repository.TestCaseRepository;
+import com.miniprojetspring.service.TestCaseService;
+import com.miniprojetspring.service.UserStoryService;
 import com.miniprojetspring.payload.TestCasePayload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;

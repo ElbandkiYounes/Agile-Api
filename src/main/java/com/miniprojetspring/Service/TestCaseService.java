@@ -1,4 +1,4 @@
-package com.miniprojetspring.Service;
+package com.miniprojetspring.service;
 
 import com.miniprojetspring.model.TestCase;
 import com.miniprojetspring.payload.TestCasePayload;

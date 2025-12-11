@@ -2,7 +2,7 @@ package com.miniprojetspring.controller;
 
 import com.miniprojetspring.model.Project;
 import com.miniprojetspring.model.User;
-import com.miniprojetspring.Service.ProjectService;
+import com.miniprojetspring.service.ProjectService;
 import com.miniprojetspring.payload.InviteUserPayload;
 import com.miniprojetspring.payload.ProjectPayload;
 import jakarta.validation.Valid;

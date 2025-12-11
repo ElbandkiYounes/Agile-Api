@@ -1,14 +1,14 @@
-package com.miniprojetspring.Service.Implementation;
+package com.miniprojetspring.service.implementation;
 
 import com.miniprojetspring.exception.ConflictException;
 import com.miniprojetspring.exception.NotFoundException;
 import com.miniprojetspring.model.ProductBacklog;
 import com.miniprojetspring.model.Project;
 import com.miniprojetspring.model.User;
-import com.miniprojetspring.Repository.UserRepository;
+import com.miniprojetspring.repository.UserRepository;
 import com.miniprojetspring.payload.InviteUserPayload;
-import com.miniprojetspring.Repository.ProjectRepository;
-import com.miniprojetspring.Service.ProjectService;
+import com.miniprojetspring.repository.ProjectRepository;
+import com.miniprojetspring.service.ProjectService;
 import com.miniprojetspring.payload.ProjectPayload;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private ProjectSecurityService projectSecurityService;
+    private final ProjectSecurityService projectSecurityService;
 
     public ProjectServiceImpl(ProjectRepository projectRepository,
                               UserRepository userRepository,

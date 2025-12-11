@@ -1,12 +1,12 @@
-package com.miniprojetspring.Service.Implementation;
+package com.miniprojetspring.service.implementation;
 
 import com.miniprojetspring.exception.NotFoundException;
 import com.miniprojetspring.model.ProductBacklog;
 import com.miniprojetspring.model.Project;
 import com.miniprojetspring.model.User;
-import com.miniprojetspring.Repository.ProductBacklogRepository;
-import com.miniprojetspring.Service.ProductBacklogService;
-import com.miniprojetspring.Service.ProjectService;
+import com.miniprojetspring.repository.ProductBacklogRepository;
+import com.miniprojetspring.service.ProductBacklogService;
+import com.miniprojetspring.service.ProjectService;
 import com.miniprojetspring.payload.ProductBacklogPayload;
 import org.springframework.stereotype.Service;
 

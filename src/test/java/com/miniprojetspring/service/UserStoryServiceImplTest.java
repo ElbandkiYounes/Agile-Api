@@ -2,13 +2,10 @@ package com.miniprojetspring.service;
 
 import com.miniprojetspring.exception.NotFoundException;
 import com.miniprojetspring.model.*;
-import com.miniprojetspring.Repository.TestCaseRepository;
-import com.miniprojetspring.Repository.UserStoryRepository;
-import com.miniprojetspring.Service.EpicService;
-import com.miniprojetspring.Service.Implementation.ProjectSecurityService;
-import com.miniprojetspring.Service.Implementation.UserStoryServiceImpl;
-import com.miniprojetspring.Service.ProductBacklogService;
-import com.miniprojetspring.Service.RoleService;
+import com.miniprojetspring.repository.TestCaseRepository;
+import com.miniprojetspring.repository.UserStoryRepository;
+import com.miniprojetspring.service.implementation.ProjectSecurityService;
+import com.miniprojetspring.service.implementation.UserStoryServiceImpl;
 import com.miniprojetspring.payload.UserStoryPayload;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

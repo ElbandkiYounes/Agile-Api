@@ -1,4 +1,4 @@
-package com.miniprojetspring.Service.Implementation;
+package com.miniprojetspring.service.implementation;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -37,11 +37,8 @@ public class JwtService {
         Map<String, Object> extraClaims = new HashMap<>();
 
         // Add user privilege to the token claims
-        if (userDetails instanceof User) {
-            User user = (User) userDetails;
-            if (user.getPrevilige() != null) {
+        if (userDetails instanceof User user && user.getPrevilige() != null) {
                 extraClaims.put("role", user.getPrevilige().name());
-            }
         }
 
         return generateToken(extraClaims, userDetails);
