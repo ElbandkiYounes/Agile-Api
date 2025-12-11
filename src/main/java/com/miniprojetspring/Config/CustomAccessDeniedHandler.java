@@ -1,4 +1,4 @@
-package com.miniprojetspring.Config;
+package com.miniprojetspring.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
