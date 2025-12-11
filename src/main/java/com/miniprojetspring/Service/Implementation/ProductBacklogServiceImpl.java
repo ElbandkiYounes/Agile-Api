@@ -73,6 +73,6 @@ public class ProductBacklogServiceImpl implements ProductBacklogService {
             throw new NotFoundException("Product Backlog does not exist for this user's project");
         }
         ProductBacklog productBacklog = project.getProductBacklog();
-        return productBacklogRepository.save(payload.ToEntity(productBacklog));
+        return productBacklogRepository.save(payload.toEntity(productBacklog));
     }
 }
