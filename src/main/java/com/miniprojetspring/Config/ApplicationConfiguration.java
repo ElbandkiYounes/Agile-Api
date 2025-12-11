@@ -1,4 +1,4 @@
-package com.miniprojetspring.Config;
+package com.miniprojetspring.config;
 
 import com.miniprojetspring.Repository.UserRepository;
 import org.springframework.context.annotation.Bean;

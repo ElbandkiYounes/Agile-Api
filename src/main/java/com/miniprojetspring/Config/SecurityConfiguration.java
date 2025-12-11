@@ -1,4 +1,4 @@
-package com.miniprojetspring.Config;
+package com.miniprojetspring.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +21,10 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfiguration {
+    private static final String API_PATTERN = "/api/**";
+    private static final String ROLE_PRODUCT_OWNER = "PRODUCT_OWNER";
+    private static final String ROLE_QUALITY_ASSURANCE = "QUALITY_ASSURANCE";
+
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomAccessDeniedHandler accessDeniedHandler;
@@ -49,24 +53,24 @@ public class SecurityConfiguration {
 
                         // 2. Role-specific permissions (most specific first)
                         // SCRUM_MASTER specific permissions
-                        .requestMatchers(HttpMethod.POST, "/api/projects/invite").hasAnyAuthority("PRODUCT_OWNER", "SCRUM_MASTER")
-                        
+                        .requestMatchers(HttpMethod.POST, "/api/projects/invite").hasAnyAuthority(ROLE_PRODUCT_OWNER, "SCRUM_MASTER")
+
                         // DEVELOPER specific permissions
-                        .requestMatchers(HttpMethod.PUT, "/api/user-stories/**").hasAnyAuthority("PRODUCT_OWNER", "DEVELOPER")
-                        
+                        .requestMatchers(HttpMethod.PUT, "/api/user-stories/**").hasAnyAuthority(ROLE_PRODUCT_OWNER, "DEVELOPER")
+
                         // QUALITY_ASSURANCE specific permissions for test cases
-                        .requestMatchers(HttpMethod.POST, "/api/user-stories/*/test-cases").hasAnyAuthority("PRODUCT_OWNER", "QUALITY_ASSURANCE")
-                        .requestMatchers(HttpMethod.PUT, "/api/test-cases/**").hasAnyAuthority("PRODUCT_OWNER", "QUALITY_ASSURANCE")
-                        .requestMatchers(HttpMethod.DELETE, "/api/test-cases/**").hasAnyAuthority("PRODUCT_OWNER", "QUALITY_ASSURANCE")
+                        .requestMatchers(HttpMethod.POST, "/api/user-stories/*/test-cases").hasAnyAuthority(ROLE_PRODUCT_OWNER, ROLE_QUALITY_ASSURANCE)
+                        .requestMatchers(HttpMethod.PUT, "/api/test-cases/**").hasAnyAuthority(ROLE_PRODUCT_OWNER, ROLE_QUALITY_ASSURANCE)
+                        .requestMatchers(HttpMethod.DELETE, "/api/test-cases/**").hasAnyAuthority(ROLE_PRODUCT_OWNER, ROLE_QUALITY_ASSURANCE)
 
                         // 3. HTTP method-based permissions
                         // READ operations (GET) accessible to all authenticated users
-                        .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
-                        
+                        .requestMatchers(HttpMethod.GET, API_PATTERN).authenticated()
+
                         // WRITE operations (POST, PUT, DELETE) for Product Owner only
-                        .requestMatchers(HttpMethod.POST, "/api/**").hasAuthority("PRODUCT_OWNER")
-                        .requestMatchers(HttpMethod.PUT, "/api/**").hasAuthority("PRODUCT_OWNER")
-                        .requestMatchers(HttpMethod.DELETE, "/api/**").hasAuthority("PRODUCT_OWNER")
+                        .requestMatchers(HttpMethod.POST, API_PATTERN).hasAuthority(ROLE_PRODUCT_OWNER)
+                        .requestMatchers(HttpMethod.PUT, API_PATTERN).hasAuthority(ROLE_PRODUCT_OWNER)
+                        .requestMatchers(HttpMethod.DELETE, API_PATTERN).hasAuthority(ROLE_PRODUCT_OWNER)
 
                         // 4. Default: require authentication for any other request
                         .anyRequest().authenticated()

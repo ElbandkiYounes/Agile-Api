@@ -1,4 +1,4 @@
-package com.miniprojetspring.Config;
+package com.miniprojetspring.config;
 
 import org.hibernate.validator.internal.constraintvalidators.bv.time.past.PastValidatorForLocalDate;
 import org.springframework.context.annotation.Bean;
