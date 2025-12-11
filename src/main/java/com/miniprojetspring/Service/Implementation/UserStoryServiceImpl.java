@@ -1,7 +1,7 @@
 package com.miniprojetspring.Service.Implementation;
 
-import com.miniprojetspring.Exception.ConflictException;
-import com.miniprojetspring.Exception.NotFoundException;
+import com.miniprojetspring.exception.ConflictException;
+import com.miniprojetspring.exception.NotFoundException;
 import com.miniprojetspring.Model.*;
 import com.miniprojetspring.Repository.TestCaseRepository;
 import com.miniprojetspring.Repository.UserStoryRepository;

@@ -1,4 +1,4 @@
-package com.miniprojetspring.Exception;
+package com.miniprojetspring.exception;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException(String message) {

@@ -1,8 +1,7 @@
 package com.miniprojetspring.service;
 
-import com.miniprojetspring.Exception.BadRequestException;
-import com.miniprojetspring.Exception.ConflictException;
-import com.miniprojetspring.Exception.NotFoundException;
+import com.miniprojetspring.exception.ConflictException;
+import com.miniprojetspring.exception.NotFoundException;
 import com.miniprojetspring.Model.*;
 import com.miniprojetspring.Repository.EpicRepository;
 import com.miniprojetspring.Service.Implementation.EpicServiceImpl;

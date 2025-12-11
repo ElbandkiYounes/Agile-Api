@@ -1,6 +1,6 @@
 package com.miniprojetspring.service;
 
-import com.miniprojetspring.Exception.NotFoundException;
+import com.miniprojetspring.exception.NotFoundException;
 import com.miniprojetspring.Model.Previlige;
 import com.miniprojetspring.Model.ProductBacklog;
 import com.miniprojetspring.Model.Project;

@@ -1,6 +1,6 @@
 package com.miniprojetspring.Service.Implementation;
 
-import com.miniprojetspring.Exception.NotFoundException;
+import com.miniprojetspring.exception.NotFoundException;
 import com.miniprojetspring.Model.SprintBacklog;
 import com.miniprojetspring.Model.Project;
 import com.miniprojetspring.Repository.SprintBacklogRepository;

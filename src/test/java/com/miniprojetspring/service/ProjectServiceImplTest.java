@@ -1,7 +1,7 @@
 package com.miniprojetspring.service;
 
-import com.miniprojetspring.Exception.ConflictException;
-import com.miniprojetspring.Exception.NotFoundException;
+import com.miniprojetspring.exception.ConflictException;
+import com.miniprojetspring.exception.NotFoundException;
 import com.miniprojetspring.Model.Previlige;
 import com.miniprojetspring.Model.Project;
 import com.miniprojetspring.Model.User;
@@ -19,9 +19,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
