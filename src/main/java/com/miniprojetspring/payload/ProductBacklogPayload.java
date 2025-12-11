@@ -20,7 +20,7 @@ public class ProductBacklogPayload {
                 .build();
     }
 
-    public ProductBacklog ToEntity(ProductBacklog productBacklog) {
+    public ProductBacklog toEntity(ProductBacklog productBacklog) {
         productBacklog.setName(this.getName());
         return productBacklog;
     }
