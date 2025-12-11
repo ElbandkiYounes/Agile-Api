@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ProjectServiceImplTest {
+class ProjectServiceImplTest {
 
     @Mock
     private ProjectRepository projectRepository;
@@ -50,7 +50,7 @@ public class ProjectServiceImplTest {
     private UUID projectId;
 
     @BeforeEach
-    public void setUp() {
+     void setUp() {
         projectId = UUID.randomUUID();
 
         createPayload = ProjectPayload
@@ -92,7 +92,7 @@ public class ProjectServiceImplTest {
     }
 
     @Test
-    public void testGetProject_Success() {
+     void testGetProject_Success() {
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
 
         Project actualProject = projectService.getProject();
@@ -104,7 +104,7 @@ public class ProjectServiceImplTest {
     }
 
     @Test
-    public void testGetProject_NotFound() {
+     void testGetProject_NotFound() {
         currentUser.setProject(null);
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
 
@@ -114,7 +114,7 @@ public class ProjectServiceImplTest {
     }
 
     @Test
-    public void testCreateProject_Success() {
+     void testCreateProject_Success() {
         currentUser.setProject(null);
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
         when(projectRepository.save(any(Project.class))).thenAnswer(invocation -> {
@@ -136,7 +136,7 @@ public class ProjectServiceImplTest {
     }
 
     @Test
-    public void testCreateProject_Conflict() {
+     void testCreateProject_Conflict() {
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
 
         assertThrows(ConflictException.class, () -> projectService.createProject(createPayload));
@@ -147,7 +147,7 @@ public class ProjectServiceImplTest {
     }
 
     @Test
-    public void testUpdateProject_Success() {
+     void testUpdateProject_Success() {
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
         when(projectRepository.save(any(Project.class))).thenReturn(project);
 
@@ -162,7 +162,7 @@ public class ProjectServiceImplTest {
     }
 
     @Test
-    public void testUpdateProject_NotFound() {
+     void testUpdateProject_NotFound() {
         currentUser.setProject(null);
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
 
@@ -173,7 +173,7 @@ public class ProjectServiceImplTest {
     }
 
     @Test
-    public void testDeleteProject_Success() {
+     void testDeleteProject_Success() {
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
         doNothing().when(projectRepository).delete(project);
 
@@ -184,7 +184,7 @@ public class ProjectServiceImplTest {
     }
 
     @Test
-    public void testDeleteProject_NotFound() {
+     void testDeleteProject_NotFound() {
         currentUser.setProject(null);
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
 
@@ -195,7 +195,7 @@ public class ProjectServiceImplTest {
     }
 
     @Test
-    public void testInviteUser_Success() {
+     void testInviteUser_Success() {
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
@@ -218,7 +218,7 @@ public class ProjectServiceImplTest {
 
 
     @Test
-    public void testInviteUser_ProjectNotFound() {
+     void testInviteUser_ProjectNotFound() {
         currentUser.setProject(null);
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
 
@@ -232,7 +232,7 @@ public class ProjectServiceImplTest {
     }
 
     @Test
-    public void testInviteUser_AlreadyInvited() {
+     void testInviteUser_AlreadyInvited() {
         User existingUser = User.builder()
                 .email(inviteUserPayload.getEmail())
                 .build();

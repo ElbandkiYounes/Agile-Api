@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class SprintBacklogServiceImplTest {
+class SprintBacklogServiceImplTest {
 
     @Mock
     private SprintBacklogRepository sprintBacklogRepository;
@@ -44,7 +44,7 @@ public class SprintBacklogServiceImplTest {
     private UUID projectId;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         projectId = UUID.randomUUID();
         sprintBacklogId = UUID.randomUUID();
 
@@ -65,7 +65,7 @@ public class SprintBacklogServiceImplTest {
     }
 
     @Test
-    public void testCreateSprintBacklog_Success() {
+    void testCreateSprintBacklog_Success() {
         when(projectServiceImpl.getProject()).thenReturn(project);
         when(sprintBacklogRepository.save(any(SprintBacklog.class))).thenReturn(sprintBacklog);
 
@@ -80,7 +80,7 @@ public class SprintBacklogServiceImplTest {
     }
 
     @Test
-    public void testCreateSprintBacklog_ProjectNotFound() {
+    void testCreateSprintBacklog_ProjectNotFound() {
         when(projectServiceImpl.getProject()).thenReturn(null);
 
         assertThrows(NotFoundException.class, () -> sprintBacklogServiceImpl.createSprintBacklog(sprintBacklogPayload));
@@ -90,7 +90,7 @@ public class SprintBacklogServiceImplTest {
     }
 
     @Test
-    public void testGetSprintBacklogById_Success() {
+    void testGetSprintBacklogById_Success() {
         when(sprintBacklogRepository.findById(sprintBacklogId)).thenReturn(Optional.of(sprintBacklog));
         when(projectSecurityService.isProjectMember(projectId.toString())).thenReturn(true);
 
@@ -104,28 +104,30 @@ public class SprintBacklogServiceImplTest {
     }
 
     @Test
-    public void testGetSprintBacklogById_NotFound() {
+    void testGetSprintBacklogById_NotFound() {
         when(sprintBacklogRepository.findById(sprintBacklogId)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> sprintBacklogServiceImpl.getSprintBacklogById(sprintBacklogId.toString()));
+        String sprintBacklogIdString = sprintBacklogId.toString();
+        assertThrows(NotFoundException.class, () -> sprintBacklogServiceImpl.getSprintBacklogById(sprintBacklogIdString));
 
         verify(sprintBacklogRepository, times(1)).findById(sprintBacklogId);
         verify(projectSecurityService, never()).isProjectMember(anyString());
     }
 
     @Test
-    public void testGetSprintBacklogById_AccessDenied() {
+    void testGetSprintBacklogById_AccessDenied() {
         when(sprintBacklogRepository.findById(sprintBacklogId)).thenReturn(Optional.of(sprintBacklog));
         when(projectSecurityService.isProjectMember(projectId.toString())).thenReturn(false);
 
-        assertThrows(AccessDeniedException.class, () -> sprintBacklogServiceImpl.getSprintBacklogById(sprintBacklogId.toString()));
+        String sprintBacklogIdString = sprintBacklogId.toString();
+        assertThrows(AccessDeniedException.class, () -> sprintBacklogServiceImpl.getSprintBacklogById(sprintBacklogIdString));
 
         verify(sprintBacklogRepository, times(1)).findById(sprintBacklogId);
         verify(projectSecurityService, times(1)).isProjectMember(projectId.toString());
     }
 
     @Test
-    public void testDeleteSprintBacklog_Success() {
+    void testDeleteSprintBacklog_Success() {
         when(sprintBacklogRepository.findById(sprintBacklogId)).thenReturn(Optional.of(sprintBacklog));
         when(projectSecurityService.isProjectOwner(projectId.toString())).thenReturn(true);
         doNothing().when(sprintBacklogRepository).deleteById(sprintBacklogId);
@@ -138,10 +140,11 @@ public class SprintBacklogServiceImplTest {
     }
 
     @Test
-    public void testDeleteSprintBacklog_NotFound() {
+    void testDeleteSprintBacklog_NotFound() {
         when(sprintBacklogRepository.findById(sprintBacklogId)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> sprintBacklogServiceImpl.deleteSprintBacklog(sprintBacklogId.toString()));
+        String sprintBacklogIdString = sprintBacklogId.toString();
+        assertThrows(NotFoundException.class, () -> sprintBacklogServiceImpl.deleteSprintBacklog(sprintBacklogIdString));
 
         verify(sprintBacklogRepository, times(1)).findById(sprintBacklogId);
         verify(projectSecurityService, never()).isProjectOwner(anyString());
@@ -149,11 +152,12 @@ public class SprintBacklogServiceImplTest {
     }
 
     @Test
-    public void testDeleteSprintBacklog_AccessDenied() {
+    void testDeleteSprintBacklog_AccessDenied() {
         when(sprintBacklogRepository.findById(sprintBacklogId)).thenReturn(Optional.of(sprintBacklog));
         when(projectSecurityService.isProjectOwner(projectId.toString())).thenReturn(false);
 
-        assertThrows(AccessDeniedException.class, () -> sprintBacklogServiceImpl.deleteSprintBacklog(sprintBacklogId.toString()));
+        String sprintBacklogIdString = sprintBacklogId.toString();
+        assertThrows(AccessDeniedException.class, () -> sprintBacklogServiceImpl.deleteSprintBacklog(sprintBacklogIdString));
 
         verify(sprintBacklogRepository, times(1)).findById(sprintBacklogId);
         verify(projectSecurityService, times(1)).isProjectOwner(projectId.toString());
@@ -161,7 +165,7 @@ public class SprintBacklogServiceImplTest {
     }
 
     @Test
-    public void testUpdateSprintBacklog_Success() {
+    void testUpdateSprintBacklog_Success() {
         when(sprintBacklogRepository.findById(sprintBacklogId)).thenReturn(Optional.of(sprintBacklog));
         when(projectSecurityService.isProjectOwner(projectId.toString())).thenReturn(true);
         when(sprintBacklogRepository.save(any(SprintBacklog.class))).thenReturn(sprintBacklog);
@@ -177,10 +181,11 @@ public class SprintBacklogServiceImplTest {
     }
 
     @Test
-    public void testUpdateSprintBacklog_NotFound() {
+    void testUpdateSprintBacklog_NotFound() {
         when(sprintBacklogRepository.findById(sprintBacklogId)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> sprintBacklogServiceImpl.updateSprintBacklog(sprintBacklogId.toString(), sprintBacklogPayload));
+        String sprintBacklogIdString = sprintBacklogId.toString();
+        assertThrows(NotFoundException.class, () -> sprintBacklogServiceImpl.updateSprintBacklog(sprintBacklogIdString, sprintBacklogPayload));
 
         verify(sprintBacklogRepository, times(1)).findById(sprintBacklogId);
         verify(projectSecurityService, never()).isProjectOwner(anyString());
@@ -188,11 +193,12 @@ public class SprintBacklogServiceImplTest {
     }
 
     @Test
-    public void testUpdateSprintBacklog_AccessDenied() {
+    void testUpdateSprintBacklog_AccessDenied() {
         when(sprintBacklogRepository.findById(sprintBacklogId)).thenReturn(Optional.of(sprintBacklog));
         when(projectSecurityService.isProjectOwner(projectId.toString())).thenReturn(false);
 
-        assertThrows(AccessDeniedException.class, () -> sprintBacklogServiceImpl.updateSprintBacklog(sprintBacklogId.toString(), sprintBacklogPayload));
+        String sprintBacklogIdString = sprintBacklogId.toString();
+        assertThrows(AccessDeniedException.class, () -> sprintBacklogServiceImpl.updateSprintBacklog(sprintBacklogIdString, sprintBacklogPayload));
 
         verify(sprintBacklogRepository, times(1)).findById(sprintBacklogId);
         verify(projectSecurityService, times(1)).isProjectOwner(projectId.toString());
