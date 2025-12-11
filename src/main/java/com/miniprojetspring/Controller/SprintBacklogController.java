@@ -1,4 +1,4 @@
-package com.miniprojetspring.Controller;
+package com.miniprojetspring.controller;
 
 import com.miniprojetspring.Model.SprintBacklog;
 import com.miniprojetspring.Service.SprintBacklogService;

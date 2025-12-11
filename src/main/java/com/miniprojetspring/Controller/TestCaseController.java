@@ -1,4 +1,4 @@
-package com.miniprojetspring.Controller;
+package com.miniprojetspring.controller;
 
 import com.miniprojetspring.Model.TestCase;
 import com.miniprojetspring.Service.TestCaseService;

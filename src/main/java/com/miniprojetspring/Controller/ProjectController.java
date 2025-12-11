@@ -1,17 +1,14 @@
-package com.miniprojetspring.Controller;
+package com.miniprojetspring.controller;
 
 import com.miniprojetspring.Model.Project;
 import com.miniprojetspring.Model.User;
 import com.miniprojetspring.Service.ProjectService;
 import com.miniprojetspring.payload.InviteUserPayload;
 import com.miniprojetspring.payload.ProjectPayload;
-import com.miniprojetspring.payload.RegisterUserPayload;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/projects")
