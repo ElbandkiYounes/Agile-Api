@@ -1,8 +1,8 @@
 package com.miniprojetspring.Service.Implementation;
 
-import com.miniprojetspring.Model.Previlige;
-import com.miniprojetspring.Model.Project;
-import com.miniprojetspring.Model.User;
+import com.miniprojetspring.model.Previlige;
+import com.miniprojetspring.model.Project;
+import com.miniprojetspring.model.User;
 import com.miniprojetspring.Repository.ProjectRepository;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;

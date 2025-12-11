@@ -1,6 +1,6 @@
 package com.miniprojetspring.controller;
 
-import com.miniprojetspring.Model.Role;
+import com.miniprojetspring.model.Role;
 import com.miniprojetspring.Service.RoleService;
 import com.miniprojetspring.payload.RolePayload;
 import jakarta.validation.Valid;

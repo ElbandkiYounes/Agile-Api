@@ -2,9 +2,9 @@ package com.miniprojetspring.service;
 
 import com.miniprojetspring.exception.ConflictException;
 import com.miniprojetspring.exception.NotFoundException;
-import com.miniprojetspring.Model.Previlige;
-import com.miniprojetspring.Model.Project;
-import com.miniprojetspring.Model.User;
+import com.miniprojetspring.model.Previlige;
+import com.miniprojetspring.model.Project;
+import com.miniprojetspring.model.User;
 import com.miniprojetspring.Repository.ProjectRepository;
 import com.miniprojetspring.Repository.UserRepository;
 import com.miniprojetspring.Service.Implementation.ProjectServiceImpl;

@@ -1,4 +1,4 @@
-package com.miniprojetspring.Model;
+package com.miniprojetspring.model;
 
 public enum EpicPriority {
     HIGH,

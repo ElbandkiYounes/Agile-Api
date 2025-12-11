@@ -2,8 +2,8 @@ package com.miniprojetspring.Service.Implementation;
 
 import com.miniprojetspring.exception.ConflictException;
 import com.miniprojetspring.exception.NotFoundException;
-import com.miniprojetspring.Model.Project;
-import com.miniprojetspring.Model.Role;
+import com.miniprojetspring.model.Project;
+import com.miniprojetspring.model.Role;
 import com.miniprojetspring.Repository.ProjectRepository;
 import com.miniprojetspring.Repository.RoleRepository;
 import com.miniprojetspring.Service.ProjectService;

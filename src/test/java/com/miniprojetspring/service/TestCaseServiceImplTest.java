@@ -1,11 +1,11 @@
 package com.miniprojetspring.service;
 
 import com.miniprojetspring.exception.NotFoundException;
-import com.miniprojetspring.Model.ProductBacklog;
-import com.miniprojetspring.Model.Project;
-import com.miniprojetspring.Model.TestCase;
-import com.miniprojetspring.Model.TestCaseResult;
-import com.miniprojetspring.Model.UserStory;
+import com.miniprojetspring.model.ProductBacklog;
+import com.miniprojetspring.model.Project;
+import com.miniprojetspring.model.TestCase;
+import com.miniprojetspring.model.TestCaseResult;
+import com.miniprojetspring.model.UserStory;
 import com.miniprojetspring.Repository.TestCaseRepository;
 import com.miniprojetspring.Service.Implementation.ProjectSecurityService;
 import com.miniprojetspring.Service.Implementation.TestCaseServiceImpl;

@@ -1,6 +1,6 @@
 package com.miniprojetspring.Service;
 
-import com.miniprojetspring.Model.TestCase;
+import com.miniprojetspring.model.TestCase;
 import com.miniprojetspring.payload.TestCasePayload;
 
 import java.util.List;

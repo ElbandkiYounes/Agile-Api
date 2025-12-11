@@ -1,6 +1,6 @@
 package com.miniprojetspring.Repository;
 
-import com.miniprojetspring.Model.TestCase;
+import com.miniprojetspring.model.TestCase;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

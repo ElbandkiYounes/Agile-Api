@@ -1,7 +1,7 @@
 package com.miniprojetspring.Service.Implementation;
 
 import com.miniprojetspring.exception.ConflictException;
-import com.miniprojetspring.Model.User;
+import com.miniprojetspring.model.User;
 import com.miniprojetspring.Repository.UserRepository;
 import com.miniprojetspring.payload.LoginUserPayload;
 import com.miniprojetspring.payload.RegisterUserPayload;

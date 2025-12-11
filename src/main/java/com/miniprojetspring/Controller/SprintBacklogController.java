@@ -1,6 +1,6 @@
 package com.miniprojetspring.controller;
 
-import com.miniprojetspring.Model.SprintBacklog;
+import com.miniprojetspring.model.SprintBacklog;
 import com.miniprojetspring.Service.SprintBacklogService;
 import com.miniprojetspring.payload.SprintBacklogPayload;
 import jakarta.validation.Valid;

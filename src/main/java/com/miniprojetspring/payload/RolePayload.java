@@ -1,8 +1,7 @@
 package com.miniprojetspring.payload;
 
-import com.miniprojetspring.Model.Project;
-import com.miniprojetspring.Model.Role;
-import jakarta.persistence.UniqueConstraint;
+import com.miniprojetspring.model.Project;
+import com.miniprojetspring.model.Role;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;

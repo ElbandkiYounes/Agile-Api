@@ -1,6 +1,6 @@
 package com.miniprojetspring.Repository;
 
-import com.miniprojetspring.Model.Epic;
+import com.miniprojetspring.model.Epic;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 

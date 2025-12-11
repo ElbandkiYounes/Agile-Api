@@ -1,9 +1,8 @@
-package com.miniprojetspring.Model;
+package com.miniprojetspring.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.Fetch;
 import lombok.*;
 
 import java.util.Collections;
