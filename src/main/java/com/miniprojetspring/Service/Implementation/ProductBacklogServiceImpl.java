@@ -1,17 +1,14 @@
 package com.miniprojetspring.Service.Implementation;
 
-import com.miniprojetspring.Exception.NotFoundException;
+import com.miniprojetspring.exception.NotFoundException;
 import com.miniprojetspring.Model.ProductBacklog;
 import com.miniprojetspring.Model.Project;
 import com.miniprojetspring.Model.User;
 import com.miniprojetspring.Repository.ProductBacklogRepository;
-import com.miniprojetspring.Repository.ProjectRepository;
 import com.miniprojetspring.Service.ProductBacklogService;
 import com.miniprojetspring.Service.ProjectService;
 import com.miniprojetspring.payload.ProductBacklogPayload;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 public class ProductBacklogServiceImpl implements ProductBacklogService {

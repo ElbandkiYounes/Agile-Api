@@ -1,7 +1,7 @@
 package com.miniprojetspring.service;
 
-import com.miniprojetspring.Exception.ConflictException;
-import com.miniprojetspring.Exception.NotFoundException;
+import com.miniprojetspring.exception.ConflictException;
+import com.miniprojetspring.exception.NotFoundException;
 import com.miniprojetspring.Model.Project;
 import com.miniprojetspring.Model.Role;
 import com.miniprojetspring.Model.User;
@@ -16,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.access.AccessDeniedException;
 
 import java.util.Optional;
 import java.util.UUID;
