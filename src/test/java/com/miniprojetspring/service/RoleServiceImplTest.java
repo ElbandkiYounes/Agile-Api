@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class RoleServiceImplTest {
+class RoleServiceImplTest {
 
     @Mock
     private RoleRepository roleRepository;
@@ -46,7 +46,7 @@ public class RoleServiceImplTest {
     private UUID projectId;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         projectId = UUID.randomUUID();
         roleId = UUID.randomUUID();
 
@@ -70,7 +70,7 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    public void testGetRoleByNameAndProjectId_Success() {
+    void testGetRoleByNameAndProjectId_Success() {
         when(projectSecurityService.getCurrentUser()).thenReturn(User.builder().project(project).build());
         when(roleRepository.findByNameAndProject_Id(createPayload.getName(), projectId)).thenReturn(Optional.of(role));
 
@@ -84,7 +84,7 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    public void testGetRoleByNameAndProjectId_NotFound() {
+    void testGetRoleByNameAndProjectId_NotFound() {
         when(projectSecurityService.getCurrentUser()).thenReturn(User.builder().project(project).build());
         when(roleRepository.findByNameAndProject_Id(createPayload.getName(), projectId)).thenReturn(Optional.empty());
 
@@ -97,7 +97,7 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    public void testGetRoleById_Success() {
+    void testGetRoleById_Success() {
         when(roleRepository.findById(roleId)).thenReturn(Optional.of(role));
         when(projectSecurityService.isProjectMember(projectId.toString())).thenReturn(true);
 
@@ -111,16 +111,17 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    public void testGetRoleById_NotFound() {
+    void testGetRoleById_NotFound() {
         when(roleRepository.findById(roleId)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> roleService.getRoleById(roleId.toString()));
+        String roleIdString = roleId.toString();
+        assertThrows(NotFoundException.class, () -> roleService.getRoleById(roleIdString));
 
         verify(roleRepository, times(1)).findById(roleId);
     }
 
     @Test
-    public void testCreateRole_Success() {
+    void testCreateRole_Success() {
         when(projectSecurityService.getCurrentUser()).thenReturn(User.builder().project(project).build());
         when(roleRepository.save(any(Role.class))).thenReturn(role);
 
@@ -135,7 +136,7 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    public void testCreateRole_ProjectNotFound() {
+    void testCreateRole_ProjectNotFound() {
         when(projectSecurityService.getCurrentUser()).thenReturn(User.builder().project(null).build());
 
         assertThrows(NotFoundException.class, () -> roleService.createRole(createPayload));
@@ -146,7 +147,7 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    public void testCreateRole_RoleAlreadyExists() {
+    void testCreateRole_RoleAlreadyExists() {
         when(projectSecurityService.getCurrentUser()).thenReturn(User.builder().project(project).build());
         when(roleRepository.findByNameAndProject_Id(createPayload.getName(), projectId)).thenReturn(Optional.of(role));
 
@@ -159,7 +160,7 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    public void testUpdateRole_Success() {
+    void testUpdateRole_Success() {
         when(roleRepository.findById(roleId)).thenReturn(Optional.of(role));
         when(projectSecurityService.isProjectOwner(projectId.toString())).thenReturn(true);
         when(roleRepository.save(any(Role.class))).thenReturn(role);
@@ -176,24 +177,26 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    public void testUpdateRole_NotFound() {
+    void testUpdateRole_NotFound() {
         when(roleRepository.findById(roleId)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> roleService.updateRole(roleId.toString(), updatePayload));
+        String roleIdString = roleId.toString();
+        assertThrows(NotFoundException.class, () -> roleService.updateRole(roleIdString, updatePayload));
 
         verify(roleRepository, times(1)).findById(roleId);
         verify(roleRepository, never()).save(any(Role.class));
     }
 
     @Test
-    public void testUpdateRole_RoleAlreadyExists() {
+    void testUpdateRole_RoleAlreadyExists() {
         Role anotherRole = Role.builder().id(UUID.randomUUID()).name(updatePayload.getName()).project(project).build();
         when(roleRepository.findById(roleId)).thenReturn(Optional.of(role));
         when(projectSecurityService.isProjectOwner(projectId.toString())).thenReturn(true);
         when(roleRepository.findByNameAndProject_Id(updatePayload.getName(), projectId)).thenReturn(Optional.of(anotherRole));
         when(projectSecurityService.getCurrentUser()).thenReturn(User.builder().project(project).build());
 
-        assertThrows(ConflictException.class, () -> roleService.updateRole(roleId.toString(), updatePayload));
+        String roleIdString = roleId.toString();
+        assertThrows(ConflictException.class, () -> roleService.updateRole(roleIdString, updatePayload));
 
         verify(roleRepository, times(1)).findById(roleId);
         verify(projectSecurityService, times(1)).isProjectOwner(projectId.toString());
@@ -202,7 +205,7 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    public void testDeleteRole_Success() {
+    void testDeleteRole_Success() {
         when(roleRepository.findById(roleId)).thenReturn(Optional.of(role));
         when(projectSecurityService.isProjectOwner(projectId.toString())).thenReturn(true);
 
@@ -214,10 +217,11 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    public void testDeleteRole_NotFound() {
+    void testDeleteRole_NotFound() {
         when(roleRepository.findById(roleId)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> roleService.deleteRole(roleId.toString()));
+        String roleIdString = roleId.toString();
+        assertThrows(NotFoundException.class, () -> roleService.deleteRole(roleIdString));
 
         verify(roleRepository, times(1)).findById(roleId);
         verify(roleRepository, never()).delete(any(Role.class));

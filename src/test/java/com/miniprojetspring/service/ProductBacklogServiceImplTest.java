@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ProductBacklogServiceImplTest {
+class ProductBacklogServiceImplTest {
 
     @Mock
     private ProductBacklogRepository productBacklogRepository;
@@ -41,13 +41,11 @@ public class ProductBacklogServiceImplTest {
     private Project project;
     private ProductBacklog productBacklog;
     private User currentUser;
-    private UUID productBacklogId;
-    private UUID projectId;
 
     @BeforeEach
-    public void setUp() {
-        projectId = UUID.randomUUID();
-        productBacklogId = UUID.randomUUID();
+     void setUp() {
+        UUID projectId = UUID.randomUUID();
+        UUID productBacklogId = UUID.randomUUID();
 
         createPayload = new ProductBacklogPayload();
         createPayload.setName("Test Backlog");
@@ -80,7 +78,7 @@ public class ProductBacklogServiceImplTest {
     }
 
     @Test
-    public void testCreateProductBacklog_Success() {
+     void testCreateProductBacklog_Success() {
         // Clear existing product backlog for this test
         project.setProductBacklog(null);
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
@@ -103,7 +101,7 @@ public class ProductBacklogServiceImplTest {
     }
 
     @Test
-    public void testCreateProductBacklog_ProjectNotFound() {
+     void testCreateProductBacklog_ProjectNotFound() {
         currentUser.setProject(null);
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
 
@@ -114,7 +112,7 @@ public class ProductBacklogServiceImplTest {
     }
 
     @Test
-    public void testCreateProductBacklog_AlreadyExists() {
+     void testCreateProductBacklog_AlreadyExists() {
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
 
         assertThrows(NotFoundException.class, () -> productBacklogServiceImpl.createProductBacklog(createPayload));
@@ -124,7 +122,7 @@ public class ProductBacklogServiceImplTest {
     }
 
     @Test
-    public void testGetProductBacklog_Success() {
+     void testGetProductBacklog_Success() {
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
 
         ProductBacklog actualBacklog = productBacklogServiceImpl.getProductBacklog();
@@ -137,7 +135,7 @@ public class ProductBacklogServiceImplTest {
     }
 
     @Test
-    public void testGetProductBacklog_ProjectNotFound() {
+     void testGetProductBacklog_ProjectNotFound() {
         currentUser.setProject(null);
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
 
@@ -147,7 +145,7 @@ public class ProductBacklogServiceImplTest {
     }
 
     @Test
-    public void testGetProductBacklog_NotFound() {
+     void testGetProductBacklog_NotFound() {
         project.setProductBacklog(null);
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
 
@@ -157,7 +155,7 @@ public class ProductBacklogServiceImplTest {
     }
 
     @Test
-    public void testDeleteProductBacklog_Success() {
+     void testDeleteProductBacklog_Success() {
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
 
         productBacklogServiceImpl.deleteProductBacklog();
@@ -167,7 +165,7 @@ public class ProductBacklogServiceImplTest {
     }
 
     @Test
-    public void testDeleteProductBacklog_ProjectNotFound() {
+     void testDeleteProductBacklog_ProjectNotFound() {
         currentUser.setProject(null);
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
 
@@ -178,7 +176,7 @@ public class ProductBacklogServiceImplTest {
     }
 
     @Test
-    public void testDeleteProductBacklog_NotFound() {
+     void testDeleteProductBacklog_NotFound() {
         project.setProductBacklog(null);
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
 
@@ -189,7 +187,7 @@ public class ProductBacklogServiceImplTest {
     }
 
     @Test
-    public void testUpdateProductBacklog_Success() {
+     void testUpdateProductBacklog_Success() {
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
         when(productBacklogRepository.save(any(ProductBacklog.class))).thenReturn(productBacklog);
 
@@ -204,7 +202,7 @@ public class ProductBacklogServiceImplTest {
     }
 
     @Test
-    public void testUpdateProductBacklog_ProjectNotFound() {
+     void testUpdateProductBacklog_ProjectNotFound() {
         currentUser.setProject(null);
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
 
@@ -215,7 +213,7 @@ public class ProductBacklogServiceImplTest {
     }
 
     @Test
-    public void testUpdateProductBacklog_NotFound() {
+     void testUpdateProductBacklog_NotFound() {
         project.setProductBacklog(null);
         when(projectSecurityService.getCurrentUser()).thenReturn(currentUser);
 

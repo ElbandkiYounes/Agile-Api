@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class UserStoryServiceImplTest {
+class UserStoryServiceImplTest {
 
     @Mock
     private UserStoryRepository userStoryRepository;
@@ -45,8 +45,6 @@ public class UserStoryServiceImplTest {
     @InjectMocks
     private UserStoryServiceImpl userStoryService;
 
-    private UUID testUuid;
-    private User testUser;
     private Project testProject;
     private ProductBacklog testProductBacklog;
     private Role testRole;
@@ -56,10 +54,10 @@ public class UserStoryServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        testUuid = UUID.randomUUID();
+        UUID testUuid = UUID.randomUUID();
 
         // Create test objects
-        testUser = new User();
+        User testUser = new User();
         testUser.setId(UUID.randomUUID());
 
         testProject = new Project();
@@ -525,9 +523,8 @@ public class UserStoryServiceImplTest {
     }
 
     // Helper method to mock getUserStoryById calls
-    private UserStory getUserStoryByIdMock(String id) {
+    private void getUserStoryByIdMock(String id) {
         when(userStoryRepository.findById(UUID.fromString(id))).thenReturn(Optional.of(testUserStory));
         when(projectSecurityService.isProjectMember(testProject.getId().toString())).thenReturn(true);
-        return testUserStory;
     }
 }
