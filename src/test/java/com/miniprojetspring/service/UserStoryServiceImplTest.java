@@ -320,12 +320,14 @@ class UserStoryServiceImplTest {
         testUserStory.setEpic(testEpic);
 
         getUserStoryByIdMock(userStoryId);
+        when(userStoryRepository.save(any(UserStory.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
         UserStory unlinkedUserStory = userStoryService.unlinkUserStoryFromEpic(userStoryId);
 
         // Assert
         assertNull(unlinkedUserStory.getEpic());
+        verify(userStoryRepository).save(any(UserStory.class));
     }
 
     @Test
