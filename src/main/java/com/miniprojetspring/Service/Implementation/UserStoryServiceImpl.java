@@ -83,7 +83,7 @@ public class UserStoryServiceImpl implements UserStoryService {
             throw new NotFoundException("Role not found");
         }
 
-        if (role.getProject().getId() != productBacklog.getProject().getId()) {
+        if (!role.getProject().getId().equals(productBacklog.getProject().getId())) {
             throw new AccessDeniedException("Role and Product Backlog not on the same project");
         }
         return userStoryRepository.save(userStoryPayload.toEntity(productBacklog,role));
@@ -112,7 +112,7 @@ public class UserStoryServiceImpl implements UserStoryService {
     public UserStory unlinkUserStoryFromEpic(String userStoryId) {
         UserStory userStory = getUserStoryById(userStoryId);
         userStory.setEpic(null);
-        return userStory;
+        return userStoryRepository.save(userStory);
     }
 
     public UserStory getUserStoryById(String id) {
@@ -134,7 +134,7 @@ public class UserStoryServiceImpl implements UserStoryService {
             throw new NotFoundException("Role not found");
         }
 
-        if (role.getProject().getId() != userStory.getProductBacklog().getProject().getId()) {
+        if (!role.getProject().getId().equals(userStory.getProductBacklog().getProject().getId())) {
             throw new NotFoundException("Role and Product Backlog not on the same project");
         }
 

@@ -8,6 +8,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface EpicRepository extends JpaRepository<Epic, UUID> {
-    @EntityGraph(attributePaths = "userStory")
+    @EntityGraph(attributePaths = "userStories")
     List<Epic> findByProductBacklog_Id(UUID productBacklogId);
 }
