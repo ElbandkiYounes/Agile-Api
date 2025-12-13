@@ -35,6 +35,19 @@ public class EpicServiceImpl implements EpicService {
         this.projectSecurityService = projectSecurityService;
     }
 
+    private void validateProjectAccess(String projectId) {
+        if (!projectSecurityService.isProjectMember(projectId)
+                && !projectSecurityService.isProjectOwner(projectId)) {
+            throw new AccessDeniedException("Access denied to project");
+        }
+    }
+
+    private void validateProjectOwner(String projectId) {
+        if (!projectSecurityService.isProjectOwner(projectId)) {
+            throw new AccessDeniedException("Only project owner can perform this action");
+        }
+    }
+
     public Epic createEpic(EpicPayload payload) {
         ProductBacklog productBacklog = productBacklogServiceImpl.getProductBacklog();
         if (productBacklog == null) {
@@ -45,10 +58,7 @@ public class EpicServiceImpl implements EpicService {
 
     public Epic getEpicById(String id) {
         Epic epic = epicRepository.findById(UUID.fromString(id)).orElseThrow(() -> new NotFoundException("Epic not found"));
-        if (!projectSecurityService.isProjectMember(epic.getProductBacklog().getProject().getId().toString())
-        && !projectSecurityService.isProjectOwner(epic.getProductBacklog().getProject().getId().toString())) {
-            throw new AccessDeniedException("Epic not found");
-        }
+        validateProjectAccess(epic.getProductBacklog().getProject().getId().toString());
         return epic;
     }
 
@@ -66,18 +76,14 @@ public class EpicServiceImpl implements EpicService {
     }
 
     public void deleteEpic(String id) {
-        getEpicById(id);
-        if(!projectSecurityService.isProjectOwner(getEpicById(id).getProductBacklog().getProject().getId().toString())){
-            throw new AccessDeniedException("Epic not found");
-        }
+        Epic epic = getEpicById(id);
+        validateProjectOwner(epic.getProductBacklog().getProject().getId().toString());
         epicRepository.deleteById(UUID.fromString(id));
     }
 
     public Epic updateEpic(String id, EpicPayload payload) {
         Epic epic = getEpicById(id);
-        if(!projectSecurityService.isProjectOwner(epic.getProductBacklog().getProject().getId().toString())){
-            throw new AccessDeniedException("Epic not found");
-        }
+        validateProjectOwner(epic.getProductBacklog().getProject().getId().toString());
         return epicRepository.save(payload.toEntity(epic));
     }
 
@@ -90,12 +96,8 @@ public class EpicServiceImpl implements EpicService {
         if (sprintBacklog == null) {
             throw new NotFoundException("Sprint Backlog not found.");
         }
-        if (!projectSecurityService.isProjectOwner(sprintBacklog.getProject().getId().toString())){
-            throw new AccessDeniedException("User doesnt have access to this Sprint Backlog");
-        }
-        if(!projectSecurityService.isProjectOwner(epic.getProductBacklog().getProject().getId().toString())){
-            throw new AccessDeniedException("User doesnt have access to this Epic");
-        }
+        validateProjectOwner(sprintBacklog.getProject().getId().toString());
+        validateProjectOwner(epic.getProductBacklog().getProject().getId().toString());
         if (epic.getUserStories().isEmpty()){
             throw new BadRequestException("Epic must have at least one User Story to be linked to a Sprint Backlog");
         }
@@ -105,9 +107,7 @@ public class EpicServiceImpl implements EpicService {
 
     public Epic unlinkEpicToSprintBacklog(String epicId) {
         Epic epic = getEpicById(epicId);
-        if(!projectSecurityService.isProjectOwner(epic.getProductBacklog().getProject().getId().toString())){
-            throw new AccessDeniedException("User does not have access to this Epic");
-        }
+        validateProjectOwner(epic.getProductBacklog().getProject().getId().toString());
         epic.setSprintBacklog(null);
         return epicRepository.save(epic);
     }

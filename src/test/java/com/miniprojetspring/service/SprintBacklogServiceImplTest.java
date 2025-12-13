@@ -14,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.access.AccessDeniedException;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -120,7 +119,7 @@ class SprintBacklogServiceImplTest {
         when(projectSecurityService.isProjectMember(projectId.toString())).thenReturn(false);
 
         String sprintBacklogIdString = sprintBacklogId.toString();
-        assertThrows(AccessDeniedException.class, () -> sprintBacklogServiceImpl.getSprintBacklogById(sprintBacklogIdString));
+        assertThrows(NotFoundException.class, () -> sprintBacklogServiceImpl.getSprintBacklogById(sprintBacklogIdString));
 
         verify(sprintBacklogRepository, times(1)).findById(sprintBacklogId);
         verify(projectSecurityService, times(1)).isProjectMember(projectId.toString());
@@ -157,7 +156,7 @@ class SprintBacklogServiceImplTest {
         when(projectSecurityService.isProjectOwner(projectId.toString())).thenReturn(false);
 
         String sprintBacklogIdString = sprintBacklogId.toString();
-        assertThrows(AccessDeniedException.class, () -> sprintBacklogServiceImpl.deleteSprintBacklog(sprintBacklogIdString));
+        assertThrows(NotFoundException.class, () -> sprintBacklogServiceImpl.deleteSprintBacklog(sprintBacklogIdString));
 
         verify(sprintBacklogRepository, times(1)).findById(sprintBacklogId);
         verify(projectSecurityService, times(1)).isProjectOwner(projectId.toString());
@@ -198,7 +197,7 @@ class SprintBacklogServiceImplTest {
         when(projectSecurityService.isProjectOwner(projectId.toString())).thenReturn(false);
 
         String sprintBacklogIdString = sprintBacklogId.toString();
-        assertThrows(AccessDeniedException.class, () -> sprintBacklogServiceImpl.updateSprintBacklog(sprintBacklogIdString, sprintBacklogPayload));
+        assertThrows(NotFoundException.class, () -> sprintBacklogServiceImpl.updateSprintBacklog(sprintBacklogIdString, sprintBacklogPayload));
 
         verify(sprintBacklogRepository, times(1)).findById(sprintBacklogId);
         verify(projectSecurityService, times(1)).isProjectOwner(projectId.toString());

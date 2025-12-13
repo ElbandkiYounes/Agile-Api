@@ -33,12 +33,16 @@ public class ProjectServiceImpl implements ProjectService {
 
     }
 
-    public Project getProject() {
+    private Project getCurrentUserProject() {
         User currentUser = projectSecurityService.getCurrentUser();
-        if(currentUser.getProject() == null) {
+        if (currentUser.getProject() == null) {
             throw new NotFoundException("User does not have a project");
         }
         return currentUser.getProject();
+    }
+
+    public Project getProject() {
+        return getCurrentUserProject();
     }
 
     public Project createProject(ProjectPayload payload) {
@@ -53,29 +57,24 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     public Project linkProductBacklogToProject(ProductBacklog productBacklog) {
-        Project project = getProject();
+        Project project = getCurrentUserProject();
         project.setProductBacklog(productBacklog);
         return projectRepository.save(project);
     }
 
     public Project updateProject(ProjectPayload payload) {
-        Project existingProject = getProject();
+        Project existingProject = getCurrentUserProject();
         return projectRepository.save(payload.toEntity(existingProject));
     }
 
     public void deleteProject() {
-        Project project = getProject();
+        Project project = getCurrentUserProject();
         projectRepository.delete(project);
     }
 
     @Transactional
     public User inviteUser(InviteUserPayload userPayload) {
-        User currentUser = projectSecurityService.getCurrentUser();
-        Project project = currentUser.getProject();
-
-        if(project == null) {
-            throw new NotFoundException("User does not have a project");
-        }
+        Project project = getCurrentUserProject();
 
         if (project.getUsers().stream().anyMatch(user -> user.getEmail().equals(userPayload.getEmail()))) {
             throw new IllegalArgumentException("User already invited");

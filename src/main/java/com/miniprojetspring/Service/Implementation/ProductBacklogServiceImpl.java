@@ -23,12 +23,25 @@ public class ProductBacklogServiceImpl implements ProductBacklogService {
         this.projectSecurityService = projectSecurityService;
     }
 
-    public ProductBacklog createProductBacklog(ProductBacklogPayload payload) {
-        User owner = projectSecurityService.getCurrentUser();
-        Project project = owner.getProject();
-        if(project == null) {
+    private Project getUserProject() {
+        User user = projectSecurityService.getCurrentUser();
+        Project project = user.getProject();
+        if (project == null) {
             throw new NotFoundException("Owner does not have a project yet");
         }
+        return project;
+    }
+
+    private ProductBacklog getExistingProductBacklog(Project project) {
+        ProductBacklog productBacklog = project.getProductBacklog();
+        if (productBacklog == null) {
+            throw new NotFoundException("Product Backlog does not exist for this user's project");
+        }
+        return productBacklog;
+    }
+
+    public ProductBacklog createProductBacklog(ProductBacklogPayload payload) {
+        Project project = getUserProject();
         if(project.getProductBacklog() != null) {
             throw new NotFoundException("Product Backlog already exists for this project");
         }
@@ -39,40 +52,19 @@ public class ProductBacklogServiceImpl implements ProductBacklogService {
     }
 
     public ProductBacklog getProductBacklog() {
-        User user = projectSecurityService.getCurrentUser();
-        Project project = user.getProject();
-        if(project == null) {
-            throw new NotFoundException("Owner does not have a project yet");
-        }
-        if(project.getProductBacklog() == null) {
-            throw new NotFoundException("Product Backlog does not exist for this user's project");
-        }
-        return project.getProductBacklog();
+        Project project = getUserProject();
+        return getExistingProductBacklog(project);
     }
 
     public void deleteProductBacklog() {
-        User user = projectSecurityService.getCurrentUser();
-        Project project = user.getProject();
-        if(project == null) {
-            throw new NotFoundException("Owner does not have a project yet");
-        }
-        if(project.getProductBacklog() == null) {
-            throw new NotFoundException("Product Backlog does not exist for this user's project");
-        }
-        productBacklogRepository.delete(project.getProductBacklog());
-
+        Project project = getUserProject();
+        ProductBacklog productBacklog = getExistingProductBacklog(project);
+        productBacklogRepository.delete(productBacklog);
     }
 
     public ProductBacklog updateProductBacklog(ProductBacklogPayload payload) {
-        User owner = projectSecurityService.getCurrentUser();
-        Project project = owner.getProject();
-        if(project == null) {
-            throw new NotFoundException("Owner does not have a project yet");
-        }
-        if(project.getProductBacklog() == null) {
-            throw new NotFoundException("Product Backlog does not exist for this user's project");
-        }
-        ProductBacklog productBacklog = project.getProductBacklog();
+        Project project = getUserProject();
+        ProductBacklog productBacklog = getExistingProductBacklog(project);
         return productBacklogRepository.save(payload.toEntity(productBacklog));
     }
 }

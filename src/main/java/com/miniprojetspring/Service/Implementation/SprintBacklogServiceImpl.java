@@ -25,6 +25,19 @@ public class SprintBacklogServiceImpl implements SprintBacklogService {
         this.projectSecurityService = projectSecurityService;
     }
 
+    private void validateProjectAccess(String projectId) {
+        if (!projectSecurityService.isProjectMember(projectId)
+                && !projectSecurityService.isProjectOwner(projectId)) {
+            throw new NotFoundException("Sprint Backlog not found");
+        }
+    }
+
+    private void validateProjectOwner(String projectId) {
+        if (!projectSecurityService.isProjectOwner(projectId)) {
+            throw new NotFoundException("Sprint Backlog not found");
+        }
+    }
+
     public SprintBacklog createSprintBacklog(SprintBacklogPayload payload) {
         Project project = projectServiceImpl.getProject();
         if (project == null) {
@@ -36,32 +49,19 @@ public class SprintBacklogServiceImpl implements SprintBacklogService {
     public SprintBacklog getSprintBacklogById(String id) {
         SprintBacklog sprintBacklog =  sprintBacklogRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new NotFoundException("Sprint Backlog not found"));
-        if(!projectSecurityService.isProjectMember(sprintBacklog.getProject().getId().toString())
-        && !projectSecurityService.isProjectOwner(sprintBacklog.getProject().getId().toString())) {
-            throw new AccessDeniedException("Sprint Backlog not found");
-        }
+        validateProjectAccess(sprintBacklog.getProject().getId().toString());
         return sprintBacklog;
     }
 
     public void deleteSprintBacklog(String id) {
         SprintBacklog sprintBacklog = getSprintBacklogById(id);
-        if (sprintBacklog == null) {
-            throw new NotFoundException("Sprint Backlog not found");
-        }
-        if(!projectSecurityService.isProjectOwner(sprintBacklog.getProject().getId().toString())) {
-            throw new AccessDeniedException("Sprint Backlog not found");
-        }
+        validateProjectOwner(sprintBacklog.getProject().getId().toString());
         sprintBacklogRepository.deleteById(UUID.fromString(id));
     }
 
     public SprintBacklog updateSprintBacklog(String id, SprintBacklogPayload payload) {
         SprintBacklog sprintBacklog = getSprintBacklogById(id);
-        if (sprintBacklog == null) {
-            throw new NotFoundException("Sprint Backlog not found");
-        }
-        if(!projectSecurityService.isProjectOwner(sprintBacklog.getProject().getId().toString())) {
-            throw new AccessDeniedException("Sprint Backlog not found");
-        }
+        validateProjectOwner(sprintBacklog.getProject().getId().toString());
         return sprintBacklogRepository.save(payload.toEntity(sprintBacklog));
     }
 }
