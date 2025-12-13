@@ -41,15 +41,25 @@ public class UserStoryServiceImpl implements UserStoryService {
         this.projectSecurityService = projectSecurityService;
     }
 
+    private void validateProjectAccess(String projectId) throws NotFoundException {
+        if (!projectSecurityService.isProjectMember(projectId)
+                && !projectSecurityService.isProjectOwner(projectId)) {
+            throw new AccessDeniedException("Access denied to project");
+        }
+    }
+
+    private void validateSameProject(UUID projectId1, UUID projectId2, String errorMessage) throws NotFoundException{
+        if (!projectId1.equals(projectId2)) {
+            throw new AccessDeniedException(errorMessage);
+        }
+    }
+
     public List<UserStory> getUserStoriesByRoleId(String roleId) {
         Role role = roleService.getRoleById(roleId);
         if(role==null) {
             throw new NotFoundException("Role not found.");
         }
-        if(!projectSecurityService.isProjectMember(role.getProject().getId().toString())
-        && !projectSecurityService.isProjectOwner(role.getProject().getId().toString())) {
-            throw new NotFoundException("Role Not found");
-        }
+        validateProjectAccess(role.getProject().getId().toString());
         return userStoryRepository.findByRole_Id(UUID.fromString(roleId));
     }
 
@@ -58,10 +68,7 @@ public class UserStoryServiceImpl implements UserStoryService {
         if(epic==null) {
             throw new NotFoundException("Epic not found.");
         }
-        if(!projectSecurityService.isProjectMember(epic.getProductBacklog().getProject().getId().toString())
-                && !projectSecurityService.isProjectOwner(epic.getProductBacklog().getProject().getId().toString())) {
-            throw new AccessDeniedException("Epic not found");
-        }
+        validateProjectAccess(epic.getProductBacklog().getProject().getId().toString());
         return userStoryRepository.findByEpic_Id(UUID.fromString(epicId));
     }
 
@@ -83,9 +90,8 @@ public class UserStoryServiceImpl implements UserStoryService {
             throw new NotFoundException("Role not found");
         }
 
-        if (!role.getProject().getId().equals(productBacklog.getProject().getId())) {
-            throw new AccessDeniedException("Role and Product Backlog not on the same project");
-        }
+        validateSameProject(role.getProject().getId(), productBacklog.getProject().getId(),
+                "Role and Product Backlog not on the same project");
         return userStoryRepository.save(userStoryPayload.toEntity(productBacklog,role));
     }
 
@@ -101,9 +107,8 @@ public class UserStoryServiceImpl implements UserStoryService {
             throw new NotFoundException("Epic not found.");
         }
 
-        if(!userStory.getProductBacklog().getId().equals(epic.getProductBacklog().getId())) {
-            throw new AccessDeniedException("UserStory and Epic not on the same backlog");
-        }
+        validateSameProject(userStory.getProductBacklog().getId(), epic.getProductBacklog().getId(),
+                "UserStory and Epic not on the same backlog");
         userStory.setEpic(epic);
         return userStoryRepository.save(userStory);
 
@@ -118,11 +123,7 @@ public class UserStoryServiceImpl implements UserStoryService {
     public UserStory getUserStoryById(String id) {
         UserStory userStory =  userStoryRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new NotFoundException("User Story not found for ID: " + id));
-        if(!projectSecurityService.isProjectMember(userStory.getProductBacklog().getProject().getId().toString())
-        && !projectSecurityService.isProjectOwner(userStory.getProductBacklog().getProject().getId().toString())) {
-            throw new AccessDeniedException("User Story not found");
-        }
-
+        validateProjectAccess(userStory.getProductBacklog().getProject().getId().toString());
         return userStory;
     }
 
@@ -134,9 +135,8 @@ public class UserStoryServiceImpl implements UserStoryService {
             throw new NotFoundException("Role not found");
         }
 
-        if (!role.getProject().getId().equals(userStory.getProductBacklog().getProject().getId())) {
-            throw new NotFoundException("Role and Product Backlog not on the same project");
-        }
+        validateSameProject(role.getProject().getId(), userStory.getProductBacklog().getProject().getId(),
+                "Role and Product Backlog not on the same project");
 
         return userStoryRepository.save(userStoryPayload.toEntity(userStory,role));
     }

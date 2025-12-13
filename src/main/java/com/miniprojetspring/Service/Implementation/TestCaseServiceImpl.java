@@ -31,6 +31,19 @@ public class TestCaseServiceImpl implements TestCaseService {
         this.projectSecurityService = projectSecurityService;
     }
 
+    private void validateProjectAccess(String projectId) {
+        if (!projectSecurityService.isProjectMember(projectId)
+                && !projectSecurityService.isProjectOwner(projectId)) {
+            throw new AccessDeniedException("Access denied to project");
+        }
+    }
+
+    private void validateProjectOwner(String projectId) {
+        if (!projectSecurityService.isProjectOwner(projectId)) {
+            throw new AccessDeniedException("Only project owner can perform this action");
+        }
+    }
+
     @Override
     public TestCase createTestCase(TestCasePayload testCasePayload, String userStoryId) {
         UserStory userStory = userStoryService.getUserStoryById(userStoryId);
@@ -38,11 +51,7 @@ public class TestCaseServiceImpl implements TestCaseService {
             throw new NotFoundException("User story not found");
         }
 
-        // Check if the user has access to the project
-        if (!projectSecurityService.isProjectMember(userStory.getProductBacklog().getProject().getId().toString())
-                && !projectSecurityService.isProjectOwner(userStory.getProductBacklog().getProject().getId().toString())) {
-            throw new AccessDeniedException("User story not found");
-        }
+        validateProjectAccess(userStory.getProductBacklog().getProject().getId().toString());
 
         TestCase testCase = testCasePayload.toEntity(userStory);
         return testCaseRepository.save(testCase);
@@ -53,11 +62,7 @@ public class TestCaseServiceImpl implements TestCaseService {
         TestCase testCase = testCaseRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new NotFoundException("Test case not found"));
 
-        // Check if the user has access to the project
-        if (!projectSecurityService.isProjectMember(testCase.getUserStory().getProductBacklog().getProject().getId().toString())
-                && !projectSecurityService.isProjectOwner(testCase.getUserStory().getProductBacklog().getProject().getId().toString())) {
-            throw new AccessDeniedException("Test case not found");
-        }
+        validateProjectAccess(testCase.getUserStory().getProductBacklog().getProject().getId().toString());
 
         return testCase;
     }
@@ -75,11 +80,7 @@ public class TestCaseServiceImpl implements TestCaseService {
             throw new NotFoundException("Test case does not belong to user story");
         }
 
-        // Check if the user has proper access rights for updating
-        if (!projectSecurityService.isProjectMember(userStory.getProductBacklog().getProject().getId().toString())
-                && !projectSecurityService.isProjectOwner(userStory.getProductBacklog().getProject().getId().toString())) {
-            throw new AccessDeniedException("Insufficient privileges for this operation");
-        }
+        validateProjectAccess(userStory.getProductBacklog().getProject().getId().toString());
 
         userStoryService.checkUserStoryStatus(userStoryId);
         return testCaseRepository.save(testCasePayload.toEntity(existingTestCase));
@@ -89,11 +90,7 @@ public class TestCaseServiceImpl implements TestCaseService {
     public void deleteTestCase(String id) {
         TestCase testCase = getTestCaseById(id);
 
-        // Check if the user has proper access rights for deletion
-        // Only project owners should be able to delete (following pattern from other services)
-        if (!projectSecurityService.isProjectOwner(testCase.getUserStory().getProductBacklog().getProject().getId().toString())) {
-            throw new AccessDeniedException("Test case not found");
-        }
+        validateProjectOwner(testCase.getUserStory().getProductBacklog().getProject().getId().toString());
 
         testCaseRepository.delete(testCase);
     }
@@ -105,11 +102,7 @@ public class TestCaseServiceImpl implements TestCaseService {
             throw new NotFoundException("User story not found");
         }
 
-        // Check if the user has access to the project
-        if (!projectSecurityService.isProjectMember(userStory.getProductBacklog().getProject().getId().toString())
-                && !projectSecurityService.isProjectOwner(userStory.getProductBacklog().getProject().getId().toString())) {
-            throw new AccessDeniedException("User story not found");
-        }
+        validateProjectAccess(userStory.getProductBacklog().getProject().getId().toString());
 
         return testCaseRepository.findTestCasesByUserStoryId(UUID.fromString(userStoryId));
     }

@@ -31,6 +31,19 @@ public class RoleServiceImpl implements RoleService {
         this.projectSecurityService = projectSecurityService;
     }
 
+    private void validateProjectAccess(String projectId) {
+        if (!projectSecurityService.isProjectMember(projectId)
+                && !projectSecurityService.isProjectOwner(projectId)) {
+            throw new AccessDeniedException("Access denied to project");
+        }
+    }
+
+    private void validateProjectOwner(String projectId) {
+        if (!projectSecurityService.isProjectOwner(projectId)) {
+            throw new AccessDeniedException("Only project owner can perform this action");
+        }
+    }
+
     @Override
     public Role getRoleByNameAndProjectId(String name) {
         Project project = projectSecurityService.getCurrentUser().getProject();
@@ -47,10 +60,7 @@ public class RoleServiceImpl implements RoleService {
         if(role.isEmpty()) {
             throw new NotFoundException("Role not found");
         }
-        if(!projectSecurityService.isProjectMember(role.get().getProjectId().toString())
-                && !projectSecurityService.isProjectOwner(role.get().getProjectId().toString())) {
-            throw new AccessDeniedException("Role not found");
-        }
+        validateProjectAccess(role.get().getProjectId().toString());
         return role.get();
     }
 
@@ -75,9 +85,7 @@ public class RoleServiceImpl implements RoleService {
     public Role updateRole(String roleId, RolePayload payload) {
         Role existingRole = roleRepository.findById(UUID.fromString(roleId))
                 .orElseThrow(() -> new NotFoundException("Role not found"));
-        if(!projectSecurityService.isProjectOwner(existingRole.getProjectId().toString())) {
-            throw new AccessDeniedException("Role not found");
-        }
+        validateProjectOwner(existingRole.getProjectId().toString());
         Role role = getRoleByNameAndProjectId(payload.getName());
         if (role != null && !role.getId().equals(existingRole.getId())) {
             throw new ConflictException("Role already exists");
@@ -97,9 +105,7 @@ public class RoleServiceImpl implements RoleService {
     public void deleteRole(String id) {
         Role role = roleRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new NotFoundException("Role not found"));
-        if(!projectSecurityService.isProjectOwner(role.getProjectId().toString())) {
-            throw new AccessDeniedException("Role not found");
-        }
+        validateProjectOwner(role.getProjectId().toString());
         roleRepository.delete(role);
     }
 }

@@ -139,7 +139,7 @@ class UserStoryServiceImplTest {
         when(projectSecurityService.isProjectOwner(testProject.getId().toString())).thenReturn(false);
 
         // Act & Assert
-        assertThrows(NotFoundException.class, () -> userStoryService.getUserStoriesByRoleId(roleId));
+        assertThrows(AccessDeniedException.class, () -> userStoryService.getUserStoriesByRoleId(roleId));
         verify(roleService).getRoleById(roleId);
         verify(userStoryRepository, never()).findByRole_Id(any(UUID.class));
     }
@@ -420,7 +420,7 @@ class UserStoryServiceImplTest {
         when(roleService.getRoleById(testUserStoryPayload.getRoleId())).thenReturn(roleFromAnotherProject);
 
         // Act & Assert
-        assertThrows(NotFoundException.class, () -> userStoryService.updateUserStory(testUserStoryPayload, userStoryId));
+        assertThrows(AccessDeniedException.class, () -> userStoryService.updateUserStory(testUserStoryPayload, userStoryId));
         verify(roleService).getRoleById(testUserStoryPayload.getRoleId());
         verify(userStoryRepository, never()).save(any(UserStory.class));
     }
