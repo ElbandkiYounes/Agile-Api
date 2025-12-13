@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
@@ -16,7 +17,7 @@ import java.util.UUID;
 @Table(name = "roles", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"project_id", "name"})
 })
-public class Role {
+public class Role implements Serializable {
     @Id
     @Builder.Default
     private UUID id = UUID.randomUUID();

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-public class SprintBacklog {
+public class SprintBacklog implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
