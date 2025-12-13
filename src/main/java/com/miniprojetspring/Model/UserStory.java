@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Date;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-public class UserStory {
+public class UserStory implements Serializable {
     @Id
     @Builder.Default
     private UUID id = UUID.randomUUID();

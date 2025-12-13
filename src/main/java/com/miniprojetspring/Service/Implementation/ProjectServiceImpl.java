@@ -54,7 +54,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     public Project linkProductBacklogToProject(ProductBacklog productBacklog) {
         Project project = getProject();
-        System.out.println(project.getId());
         project.setProductBacklog(productBacklog);
         return projectRepository.save(project);
     }

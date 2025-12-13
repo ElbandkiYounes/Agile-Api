@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
@@ -12,7 +13,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-public class TestCase {
+public class TestCase implements Serializable {
     @Id
     @Builder.Default
     private UUID id = UUID.randomUUID();
